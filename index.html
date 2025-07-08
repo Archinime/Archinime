@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <!-- Añadido id para cambiar dinámicamente -->
+  <meta name="viewport" id="viewport-meta" content="width=device-width,initial-scale=1">
+  <title>Archinime</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{
+      height:100%;
+      overflow-x:hidden;
+      overflow-y:auto;
+      font-family:sans-serif;
+      color:#fff;
+    }
+    /* Fondo galaxia */
+    #bg-video{
+      position:fixed; top:0; left:0;
+      width:100%; height:100%;
+      object-fit:cover; z-index:-2;
+      will-change: opacity, transform;
+    }
+    #overlay{
+      position:fixed; top:0; left:0;
+      width:100%; height:100%;
+      background:rgba(0,0,0,0.6); z-index:-1;
+      will-change: background;
+    }
+
+    /* ——— Modal sugerencia modo escritorio ——— */
+    #desktop-modal {
+      display: none;
+      position: fixed; top:0; left:0;
+      width:100%; height:100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 1rem;
+    }
+    #desktop-modal .modal-content {
+      background: #111;
+      padding: 2rem;
+      border-radius: 1rem;
+      max-width: 90%;
+      box-shadow: 0 0 20px rgba(0,0,0,0.8);
+    }
+    #desktop-modal button {
+      margin-top: 1rem;
+      padding: .75rem 1.5rem;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: .5rem;
+      cursor: pointer;
+      background: #0ff;
+      color: #000;
+      transition: transform .2s;
+    }
+    #desktop-modal button:hover {
+      transform: scale(1.05);
+    }
+
+    /* Botón circular de apoyo */
+    #support {
+      position: fixed; bottom:1rem; right:1rem;
+      text-align:center; z-index:11;
+    }
+    #tiktok-btn, #youtube-btn {
+      width:60px; height:60px; border:none;
+      border-radius:50%; background:#fff;
+      padding:0; cursor:pointer;
+      box-shadow:0 2px 8px rgba(0,0,0,0.5);
+      transition:transform .2s; overflow:hidden;
+    }
+    #tiktok-btn:hover, #youtube-btn:hover { transform:scale(1.1); }
+    #tiktok-btn img, #youtube-btn img { width:100%;height:100%;object-fit:cover; }
+    #support-text{
+      margin-top:.4rem; font-size:.9rem;
+      color:#0ff; text-shadow:1px 1px 2px #000;
+      font-weight:bold; white-space:nowrap;
+    }
+
+    header{
+      position:sticky; top:0; padding:1rem 2rem;
+      display:flex; align-items:center; gap:1rem;
+      background:rgba(0,0,0,0.7); backdrop-filter:blur(5px);
+      z-index:10; transition:background .3s;
+    }
+    header.scrolled{background:rgba(0,0,0,0.95);}
+    header h1{
+      cursor:pointer; font-size:1.8rem;
+      background:linear-gradient(90deg,#0ff,#f0f);
+      -webkit-background-clip:text; color:transparent;
+    }
+    header select, header input{
+      padding:.5rem 1rem; border:none; border-radius:5px;
+      font-size:1rem; transition:box-shadow .3s;
+      background:rgba(255,255,255,0.9); color:#000;
+    }
+    header select:focus, header input:focus{
+      box-shadow:0 0 8px #0ff;
+    }
+    #search{width:200px;}
+    .container{max-width:1200px;margin:6rem auto 2rem;padding:0 2rem;}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.5rem;}
+    .card{
+      opacity:0; transform:translateY(30px);
+      transition:all .6s ease-out; cursor:pointer;
+      border-radius:10px; overflow:hidden; position:relative;
+      will-change: opacity, transform;
+    }
+    .card.visible{opacity:1;transform:translateY(0);}
+    .card img{
+      width:100%; display:block;
+      filter:brightness(100%);
+      transition:transform .4s,filter .4s;
+    }
+    .card:hover img{
+      transform:scale(1.05); filter:brightness(75%);
+    }
+    .info{
+      position:absolute; bottom:0; left:0; right:0;
+      background:rgba(0,0,0,0.7); padding:.75rem;
+      transform:translateY(100%); transition:transform .3s;
+    }
+    .card:hover .info{transform:translateY(0);}
+    .info strong{display:block;font-size:1.05rem;margin-bottom:.25rem;}
+    .info span{
+      background:#0ff; color:#000;
+      padding:2px 6px; border-radius:4px; font-size:.85rem;
+    }
+
+    /* —————— Media query para móviles (≤600px) —————— */
+    @media (max-width: 600px) {
+      header {
+        flex-wrap: wrap;
+        padding: 0.5rem 1rem;
+        gap: 0.5rem;
+        justify-content: center;
+      }
+      header select, header input#search,
+      #genre-select, #rating-select {
+        flex: 1 1 100%;
+        max-width: 100%;
+        padding: 0.4rem;
+        font-size: 0.9rem;
+      }
+      #support {
+        display: flex; flex-direction: column; align-items: center;
+      }
+      #tiktok-btn, #youtube-btn {
+        width: 50px; height: 50px; margin: 0.3rem 0;
+      }
+      #support-text {
+        font-size: 0.75rem; text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Modal sugerencia modo escritorio -->
+  <div id="desktop-modal">
+    <div class="modal-content">
+      <p>¿Quieres cambiar a <strong>modo escritorio</strong> para una mejor experiencia?</p>
+      <button id="accept-desktop">Aceptar</button>
+    </div>
+  </div>
+
+  <!-- Vídeo de fondo -->
+  <video id="bg-video" autoplay loop muted playsinline>
+    <source src="https://www.dropbox.com/scl/fi/ckoormrj6fgd6zcw0xgwq/galaxia.mp4?rlkey=qs4g9k0rbylylu2hnqls0bf5n&st=b99od388&raw=1" type="video/mp4">
+  </video>
+  <div id="overlay"></div>
+
+  <!-- ——— Botones circulares de apoyo ——— -->
+  <div id="support">
+    <a href="TU_LINK_YOUTUBE" target="_blank">
+      <button id="youtube-btn">
+        <img src="youtube.jpg" alt="YouTube">
+      </button>
+    </a>
+    <a href="TU_LINK_TIKTOK" target="_blank">
+      <button id="tiktok-btn">
+        <img src="tiktok.jpg" alt="TikTok">
+      </button>
+    </a>
+    <div id="support-text">Sígueme y apóyame</div>
+  </div>
+
+  <header>
+    <h1 onclick="location.reload()">Archinime</h1>
+
+    <select id="genre-select" onchange="filtro()">
+      <option value="">Todos los géneros</option>
+      <option>Acción</option>
+      <option>Aventura</option>
+      <option>Animación</option>
+      <option>Comedia</option>
+      <option>Comedia oscura</option>
+      <option>Drama</option>
+      <option>Slice of Life</option>
+      <option>Romance</option>
+      <option>Tragedia</option>
+      <option>Psicológico</option>
+      <option>Fantasía</option>
+      <option>Fantasía oscura</option>
+      <option>Ciencia ficción</option>
+      <option>Cyberpunk</option>
+      <option>Sobrenatural</option>
+      <option>Superhéroes</option>
+      <option>Terror</option>
+      <option>Isekai</option>
+      <option>Romance escolar</option>
+      <option>Yaoi</option>
+      <option>Yuri</option>
+      <option>Harem</option>
+      <option>Reverse Harem</option>
+      <option>Shōnen</option>
+      <option>Shōjo</option>
+      <option>Seinen</option>
+      <option>Josei</option>
+      <option>Kodomo</option>
+      <option>Escolar</option>
+      <option>Deportivo</option>
+      <option>Nekketsu</option>
+      <option>Musical</option>
+      <option>Histórico</option>
+      <option>Militar</option>
+      <option>Mecha</option>
+      <option>Misterio</option>
+      <option>Mahō Shōjo</option>
+      <option>Parodia</option>
+      <option>Ecchi</option>
+      <option>Hentai</option>
+      <option>Gore</option>
+      <option>Thriller</option>
+      <option>Thriller psicológico</option>
+      <option>Terror psicológico</option> 
+    </select>
+
+    <select id="rating-select" onchange="filtro()">
+      <option value="">⭐ Todas</option>
+      <option value="excellent">⭐ Excelente (4.8–5.0)</option>
+      <option value="good">⭐ Buena (4.6–4.7)</option>
+      <option value="regular">⭐ Regular (&lt;4.5)</option>
+    </select>
+
+    <input id="search" placeholder="🔍 Buscar anime…" oninput="debouncedFiltro()">
+  </header>
+
+  <main class="container">
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <script>
+    const animes = [
+      {id:1, title:"DAN DA DAN", img:"dan.jpg", rating:4.9, genres:["Acción","Shōnen","Sobrenatural","Comedia","Romance","Comedia oscura"]},
+      {id:2, title:"Jujutsu Kaisen", img:"Jujutsu.jpg", rating:4.9, genres:["Fantasía oscura","Acción","Shōnen","Sobrenatural","Fantasía oscura","Acción","Shōnen","Nekketsu"]},
+      {id:3, title:"Konosuba", img:"konosuba.jpg", rating:4.8,
+        genres:["Aventura","Comedia","Fantasía","Sobrenatural","Isekai","Ecchi","Shōnen"]},
+      {id:4, title:"Re:Zero − Empezar vida en otro mundo", img:"rezero.png", rating:4.8,
+        genres:["Acción","Aventura","Drama","Fantasía oscura","Romance","Thriller psicológico","Terror psicológico","Isekai","Shōnen"]},
+      {id:5, title:"Mushoku Tensei", img:"mushoku.jpg", rating:4.8, genres:["Isekai","Ecchi","Romance","Harem","Acción","Aventura","Drama","Fantasía","Seinen"]},
+      {id:6, title:"Tensei Shitara Slime Datta Ken", img:"slime.jpg", rating:4.9, genres:["Comedia","Isekai","Acción","Aventura","Fantasía"]},
+      {id:7, title:"Saga of Tanya the Evil (Yōjo Senki)", img:"Tanya1.jpg", rating:4.8, genres:["Acción","Aventura","Fantasía","Militar","Drama","Ciencia ficción","Seinen"]},
+      {id:8, title:"Overlord", img:"overlord.jpg", rating:4.8, genres:["Acción","Aventura","Fantasía","Sobrenatural","Fantasía oscura","Ciencia ficción","Isekai","Seinen"]},
+      {id:9, title:"To Be Hero X", img:"hero11.jpg", rating:4.8, genres:["Acción","Comedia","Animación","Fantasía","Superhéroes","Seinen"]},
+      {id:10, title:"Demon Slayer", img:"demon.jpg", rating:4.8, genres:["Fantasía"]},
+      {id:11, title:"Date a Live", img:"date.jpg ", rating:4.6, genres:["Acción","Comedia","Romance","Aventura","Drama","Ciencia ficción"]},
+      {id:12, title:"Wistoria: Wand and Sword", img:"wistoria.jpg", rating:4.8, genres:["Fantasía","Aventura","Shōnen"]},
+      {id:13, title:"Izure Saikyou no Renkinjutsushi", img:"izure.jpg", rating:4.6, genres:["Aventura","Comedia","Fantasía","Isekai","Shōnen"]},
+      {id:14, title:"Alya Sometimes Hides Her Feelings in Russian", img:"alia.jpg", rating:4.8, genres:["Comedia","Romance","Romance escolar","Escolar","Josei"]},
+      {id:15, title:"Reborn as a Vending Machine, I Now Wander the Dungeon", img:"jidou.jpg", rating:4.2, genres:["Fantasía","Isekai","Shōnen"]},
+      {id:16, title:"kimi to boku no saigo no senjou", img:"kimi22222.jpg", rating:4.5, genres:["Acción","Fantasía","Romance","Militar","Seinen"]},
+      {id:17, title:"The Gorila God's Go- To Girl", img:"gorila11.jpg", rating:4.5, genres:["Fantasía","Comedia","Escolar","Romance","Shōjo"]},
+      {id:18, title:"Chainsaw Man", img:"chaiw11.jpg", rating:4.9, genres:["Fantasía oscura","Acción","Shōnen","Comedia oscura"]},
+      {id:19, title:"Black Butler -Emerald Witch Arc", img:"bb1.jpg", rating:4.7, genres:["Shōnen","Acción","Fantasía oscura","Thriller psicológico","Misterio","Sobrenatural","Comedia oscura"]},
+      {id:20, title:"Overflow", img:"overflow.jpg", rating:4.1, genres:["Hentai","Escolar","Romance","Harem"]},
+      {id:21, title:"Shiunji-ke no Kodomotachi", img:"Shiux.jpg", rating:4.6, genres:["Comedia","Romance","Drama","Harem","Slice of Life","Seinen"]},
+      {id:22, title:"Spy x Family", img:"spyfamily.jpg", rating:4.6, genres:["Comedia"]},
+      {id:23, title:"Kanchigai no Atelier Meister", img:"atelier1.jpg", rating:4.6, genres:["Aventura","Comedia","Fantasía","Acción","Shōnen"]},
+      {id:24, title:"Definitivamente. ¡No me gusta mi hermano para nada!", img:"oni.jpg", rating:4.1, genres:["Seinen","Comedia","Romance","Slice of Life","Harem","Ecchi"]},
+      {id:25, title:"Eraased", img:"erased.jpg", rating:4.4, genres:["Drama"]},
+      {id:26, title:"Vinlaand Saga", img:"vinland.jpg", rating:4.6, genres:["Histórico"]},
+      {id:27, title:"Spy x Family", img:"spyfamily.jpg", rating:4.6, genres:["Comedia"]},
+      {id:28, title:"Dr. Stone", img:"drstone.jpg", rating:4.5, genres:["Ciencia ficción"]},
+      {id:29, title:"The Promised Neverland", img:"neverland.jpg", rating:4.3, genres:[]},
+      {id:30, title:"Shoujo Ramune", img:"shoujo.jpg", rating:4.7, genres:["Hentai","Harem"]}
+    ];
+
+
+    // Debounce para búsquedas
+    function debounce(fn, wait) {
+      let timeout;
+      return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => fn(...args), wait);
+      };
+    }
+    // Creamos la versión debounced de filtro()
+    const debouncedFiltro = debounce(filtro, 200);
+
+    function render(list) {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = list.map(a => `
+        <div class="card" onclick="location='anime-detail.html?id=${a.id}'">
+          <img src="${a.img}" alt="${a.title}">
+          <div class="info">
+            <strong>${a.title}</strong>
+            <span>⭐ ${a.rating.toFixed(1)}</span>
+          </div>
+        </div>
+      `).join('');
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            observer.unobserve(e.target);
+          }
+        });
+      }, {threshold:0.2});
+      document.querySelectorAll('.card').forEach(c => observer.observe(c));
+    }
+
+    function filtro(){
+      const q   = document.getElementById('search').value.toLowerCase();
+      const g   = document.getElementById('genre-select').value;
+      const cat = document.getElementById('rating-select').value;
+      const filtrados = animes.filter(a => {
+        const byText   = a.title.toLowerCase().startsWith(q);
+        const byGenre  = !g || a.genres.includes(g);
+        let   byRating = true;
+        if(cat==='excellent') byRating = a.rating >= 4.8;
+        else if(cat==='good')    byRating = a.rating >= 4.6 && a.rating < 4.8;
+        else if(cat==='regular') byRating = a.rating < 4.6;
+        return byText && byGenre && byRating;
+      });
+      render(filtrados);
+    }
+
+    // Primer render
+    render(animes);
+
+    // Detectar móvil/tablet y mostrar modal
+    function isMobileOrTablet() {
+      return /Mobi|Android|Tablet|iPad|iPhone/.test(navigator.userAgent);
+    }
+    window.addEventListener('load', () => {
+      if (isMobileOrTablet()) {
+        document.getElementById('desktop-modal').style.display = 'flex';
+      }
+    });
+
+    // Al aceptar, ajusta viewport y recarga
+    document.getElementById('accept-desktop').addEventListener('click', () => {
+      document.getElementById('viewport-meta')
+        .setAttribute('content', 'width=1200');
+      location.reload();
+    });
+
+    // Cambio de header al hacer scroll (igual que antes)
+    window.addEventListener('scroll', () => {
+      document.querySelector('header')
+        .classList.toggle('scrolled', window.scrollY > 50);
+    });
+  </script>
+</body>
+</html>

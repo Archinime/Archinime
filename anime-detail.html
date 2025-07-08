@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <!-- Defer para que el HTML cargue primero -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Detalle Anime</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;overflow-x:hidden;font-family:'Segoe UI',sans-serif;color:#fff}
+    /* Fondo vídeo con will-change */
+    #bg-video{
+      position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;
+      z-index:-2;will-change:opacity,transform;
+      /* Carga diferida del vídeo */
+      preload="none"
+    }
+    #overlay{
+      position:fixed;top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,0.5);z-index:-1;will-change:background;
+    }
+    .container{
+      position:relative;z-index:0;
+      max-width:800px;margin:80px auto;padding:20px;
+      background:rgba(0,0,0,0.7);border-radius:10px;
+      box-shadow:0 4px 20px rgba(0,0,0,0.5);
+      animation:fadeIn 0.8s ease-out;
+    }
+    @keyframes fadeIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+    .back, .share-detail {
+      display:inline-block;margin-bottom:20px;margin-right:15px;
+      color:#0ff;text-decoration:none;font-weight:bold;font-size:1rem;
+      transition:color .3s;cursor:pointer;
+    }
+    .back:hover, .share-detail:hover { color:#08c }
+
+    .anime-cover img{
+      width:100%;border-radius:8px;object-fit:cover;
+      animation:scaleIn .8s ease-out;
+      /* Lazy-load de la portada */
+      loading="lazy";
+      will-change:transform;
+    }
+    @keyframes scaleIn{from{transform:scale(1.1)}to{transform:scale(1)}}
+
+    h1{margin:20px 0;font-size:2em;text-align:center}
+    .desc{margin-bottom:30px;line-height:1.6;color:#eee}
+    details{
+      margin-bottom:20px;border:1px solid #444;border-radius:5px;overflow:hidden;
+      will-change:height;
+    }
+    summary{
+      padding:12px 15px;cursor:pointer;background:#0ff;color:#000;font-weight:bold;
+      transition:background .3s;
+    }
+    summary:hover{background:#0cc}
+    .season-content{
+      padding:15px;background:rgba(255,255,255,0.05);
+      animation:fadeIn .5s ease-in-out;
+    }
+    .season-content img{
+      width:100%;border-radius:5px;margin-bottom:10px;
+      loading="lazy";
+    }
+    .video-list{list-style:none;margin:0;padding:0}
+    .video-list li{margin-bottom:12px}
+    .video-list a{
+      display:block;padding:10px 15px;
+      background:rgba(255,255,255,0.1);
+      border:1px solid rgba(255,255,255,0.2);
+      border-radius:5px;text-decoration:none;color:#fff;
+      transition:transform .2s,background .3s;
+      will-change:transform;
+    }
+    .video-list a:hover{
+      background:rgba(0,255,255,0.2);color:#000;transform:translateX(5px);
+    }
+
+    /* Toast (igual que antes) */
+    .toast {
+      position: fixed;bottom:30px;left:50%;
+      transform: translateX(-50%) scale(0.5) translateY(20px);
+      opacity: 0;display: flex;align-items: center;gap: 8px;
+      padding:12px 20px;background:#0ff;color:#000;
+      border-radius:30px;font-weight:bold;
+      box-shadow:0 4px 15px rgba(0,255,255,0.4);
+      pointer-events:none;z-index:100;
+    }
+    @keyframes toast-in {from{transform:translateX(-50%) scale(0.5) translateY(20px);opacity:0}
+                           to{transform:translateX(-50%) scale(1) translateY(0);opacity:1}}
+    @keyframes toast-out{from{transform:translateX(-50%) scale(1) translateY(0);opacity:1}
+                         to{transform:translateX(-50%) scale(0.5) translateY(-20px);opacity:0}}
+    .toast-in{animation:toast-in 0.6s forwards}
+    .toast-out{animation:toast-out 0.7s forwards}
+  </style>
+</head>
+<body>
+  <video id="bg-video" autoplay loop muted playsinline>
+    <source src="https://www.dropbox.com/scl/fi/ckoormrj6fgd6zcw0xgwq/galaxia.mp4?rlkey=qs4g9k0rbylylu2hnqls0bf5n&st=b99od388&raw=1" type="video/mp4">
+  </video>
+  <div id="overlay"></div>
+
+  <!-- Audios -->
+  <audio id="dd-ost" loop><source src="https://www.dropbox.com/scl/fi/0020094et47pmm0kjmum8/Opening-parodia-de-Dan-Da-Dan-parodia.mp3?rlkey=26v30jule2x7fylx4p91s0g6d&st=n3mmi9r6&raw=1" type="audio/mpeg"></audio>
+  <audio id="rz-ost" loop><source src="https://www.dropbox.com/scl/fi/l3jedkw99lm0roaq01xh9/Call-of-the-Witch-ReZero-OST-15-Main-Soundtrack.mp3?rlkey=euivgyohb83u8fqdenkc10c6t&st=y9uc8mu4&raw=1" type="audio/mpeg"></audio>
+  <audio id="mt-ost" loop><source src="https://www.dropbox.com/scl/fi/f4j1oblpztyx0z5opmhfk/Mushoku-Tensei-Jobless-Reincarnation-Season-2-Opening-Full-spiral-LONGMAN-AMV-sub-espa-ol.mp3?rlkey=dinh9cxo00g4jpj9myc2nqc5l&st=3ijv7iur&raw=1" type="audio/mpeg"></audio>
+  <audio id="ts-ost" loop><source src="https://www.dropbox.com/scl/fi/j5p6icdy3m0bsbfy92aok/tensei-shitara-slime-datta-ken-opening-2-full.mp3?rlkey=g1gi7et4qd5n3vm9q3dql0660&st=kn4lzmze&raw=1" type="audio/mpeg"></audio>
+  <audio id="st-ost" loop><source src="https://www.dropbox.com/scl/fi/9dqk8zepsm8hw29vcgg32/ED-Youjo-Senki-Ending-FULL-Los-Los-Los-Tanya-Degurechaff.mp3?rlkey=ba26gebspjkx5os97tb4xzzwj&st=agns2h2c&raw=1" type="audio/mpeg"></audio>
+  <audio id="kb-music" loop><source src="https://www.dropbox.com/scl/fi/a5ftpvggsb67kx584i0kx/KONOSUBA-Gods-blessing-on-this-wonderful-world-Opening-Fantastic-Dreamer.mp3?rlkey=vjzqpyqn5bqopedx21oiromjx&st=9c47affp&raw=1" type="audio/mpeg"></audio>
+  <audio id="iz-ost" loop><source src="https://www.dropbox.com/scl/fi/ajz2nz6psxadglurd1om4/Izure-Saikyou-no-Renkinjutsushi-Opening-Full-TREASURE-by-DIALOGUE.mp3?rlkey=0fso7p0rl6rwcz5pj31fildzk&st=pxzfm5md&raw=1" type="audio/mpeg"></audio>
+  <audio id="jj-ost" loop><source src="https://www.dropbox.com/scl/fi/o6tz1ztrrqt14fqdlhwjc/TV-2-OP-OP-King-Gnu-SPECIALZ-11-56-MBSTBS-28.mp3?rlkey=0720x38jv8mey8ux361mdt17e&st=8nwdxvhq&raw=1" type="audio/mpeg"></audio>
+  <audio id="herox-ost" loop><source src="https://www.dropbox.com/scl/fi/qco7a2km0hx8b6pdor0sf/TO-BE-HERO-X-Ending-FULL-KONTINUUM-by-SennaRin-Lyrics.mp3?rlkey=ba7b47vkvcs7pfjh84fv33ann&st=r7dzkw7i&raw=1" type="audio/mpeg"></audio>
+  <audio id="al-ost" loop><source src="https://www.dropbox.com/scl/fi/tuaxm8zttc83ymbn4bv2w/Alya-Sometimes-Hides-Her-Feelings-in-Russian-Opening-Ichiban-Kagayaku-Hoshi.mp3?rlkey=v2uqxurdgbojls9urj300h0z1&st=1mw6vpvg&raw=1" type="audio/mpeg"></audio>
+  <audio id="ra-ost" loop><source src="https://www.dropbox.com/scl/fi/n3ie0ifa1ht2pf4tqvkxz/Reborn-as-a-vending-machine-now-I-wander-the-dungeon-Op-opening.mp3?rlkey=5xoje07rzz8nof4vm8h2swug2&st=3140qine&raw=1" type="audio/mpeg"></audio>
+  <audio id="ki-ost" loop><source src="https://www.dropbox.com/scl/fi/f6ndrktnbc4ytwkagoztm/Lyrics-AMV-Kimisen-OP-Full-Against.-Kaori-Ishihara.mp3?rlkey=rcpatwiczklgamqzd4lz0yciy&st=3d5g1hid&raw=1" type="audio/mpeg"></audio>
+  <audio id="gorila-ost" loop><source src="https://www.dropbox.com/scl/fi/2nhe4m6a0gi5h0etmn85k/The-Gorilla-Gods-Go-To-Girl-illuminate-Nakamura-Shuugo-KanRomPer.mp3?rlkey=l4ybmcpn2m0cs53t5zsz3gzfs&st=7qhapwx8&raw=1" type="audio/mpeg"></audio>
+  <audio id="wi-ost" loop><source src="https://www.dropbox.com/scl/fi/7agg8plmd2or8wf2dh8op/Wistoria-Wand-and-Sword-Opening-Fire-and-Fear.mp3?rlkey=gwmbtv257uv8tgbm3ocntmqyo&st=4otix8h3&raw=1" type="audio/mpeg"></audio>
+  <audio id="bb-ost" loop><source src="https://www.dropbox.com/scl/fi/rbkugytjf7i3tzd02a0tv/Black-Butler-Emerald-Witch-Arc-Opening-MAISIE-by-C-shu-Nie-feat.-HYDE.mp3?rlkey=u24lh7mru46v2mjv8nblj95mw&st=w7j9wuyg&raw=1" type="audio/mpeg"></audio>
+  <audio id="ov-ost" loop><source src="https://www.dropbox.com/scl/fi/oc430yju092ojpzr1pagj/Hinooka-Rei-Uzuho-Overflow-Ending-Full-Sub.-Espa-ol-Romaji.mp3?rlkey=lztgexhh754gv0vbt8k6cmnkv&st=ro6svsmq&raw=1" type="audio/mpeg"></audio>
+  <audio id="shi-ost" loop><source src="https://www.dropbox.com/scl/fi/x2vj0xspavosqj0a5pfla/Shiunji-ke-no-Kodomo-tachi-Opening-Full-Honey-Lemon-Sub.-Espa-ol.mp3?rlkey=g4wr62353xnd7w6y3hhg6b2yc&st=jkzhp0ov&raw=1" type="audio/mpeg"></audio>
+  <audio id="aliester-ost" loop><source src="https://www.dropbox.com/scl/fi/4oqr6y0doqq7brt5zh3r8/Unaware-Atelier-Meister-Opening-full-FACTSORY-by-MeseMoa-Lyrics.mp3?rlkey=37lhi9jt4ddplqj31bye4fxin&st=82lv1mh7&raw=1" type="audio/mpeg"></audio>
+  <audio id="oni-ost" loop><source src="https://www.dropbox.com/scl/fi/wjnlhf1nltz46ajg94iwa/Onii-chan-no-Koto-Nanka-Zenzen-Suki-Janain-Dakara-Ne-ED-FULL.mp3?rlkey=gn89oyv0s2w2sz8ve5flub7bj&st=618kyvo6&raw=1" type="audio/mpeg"></audio>
+  <audio id="sr-ost" loop><source src="https://www.dropbox.com/scl/fi/1o7env4rkr3ol8gfdnumr/Shoujo-Ramune-Anime-Opening-OVA-OP.mp3?rlkey=xqiqtoj22rmc8znm9k8p5pfdw&st=wjprsjpj&raw=1" type="audio/mpeg"></audio>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <div class="container">
+    <a href="index.html" class="back">← Volver</a>
+    <span id="share-detail" class="share-detail">🔗 Compartir</span>
+    <div id="contenido"></div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast">✅ El enlace ha sido copiado</div>
+
+  <script>
+  const data = {
+    1: {
+        title: "DAN DA DAN",
+        desc: "Cuando Momo, una estudiante de preparatoria de una familia de médiums espirituales, conoce a su compañero de clase Okarun, un friki del ocultismo, discuten: Momo cree en los fantasmas pero no en los extraterrestres, y Okarun cree en los extraterrestres pero no en los fantasmas. Cuando resulta que ambos fenómenos son reales, en Momo surge un poder oculto y en Okarun el poder de una maldición. Juntos, deberán desafiar a las fuerzas paranormales que amenazan su mundo.",
+        cover: "dan.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "dan1.jpg",
+            eps: [
+              { title: "DAN DA DAN T1 Cap 1"},
+              { title: "DAN DA DAN T1 Cap 2"},
+              { title: "DAN DA DAN T1 Cap 3"},
+              { title: "DAN DA DAN T1 Cap 4"},
+              { title: "DAN DA DAN T1 Cap 5"},
+              { title: "DAN DA DAN T1 Cap 6"},
+              { title: "DAN DA DAN T1 Cap 7"},
+              { title: "DAN DA DAN T1 Cap 8"},
+              { title: "DAN DA DAN T1 Cap 9"},
+              { title: "DAN DA DAN T1 Cap 10"},
+              { title: "DAN DA DAN T1 Cap 11"},
+              { title: "DAN DA DAN T1 Cap 12"},
+            ]
+          },
+          {
+            num: 2,
+            cover: "dan2.jpg",
+            eps: [
+              { title: "DAN DA DAN T2 Cap 1"},
+          ]
+        }
+      ]
+    },
+    2: {
+      title: "Jujutsu Kaisen",
+      desc: "Yuji Itadori se traga un dedo maldito para salvar a alguien de su clase y ahora Ryomen Sukuna, un poderoso hechicero malvado conocido como el Rey de las Maldiciones, vive en su alma. Las maldiciones son seres sobrenaturales creadas a partir de las emociones negativas de los humanos. Esta energía maldita puede usarse como fuente de poder por parte de los hechiceros y de los espíritus malditos.Guiado por los hechiceros, Yuji Itadori se une a la Escuela de Bachillerato Técnico de Brujería de Tokio, una organización que enfrenta a las maldiciones. Con la ayuda de su maestro, Satoru Gojo, Itadori hace amistad con Megumi Fushiguro y Nobara Kugisaki, ambos estudiantes de primer año como él.",
+      cover: "Jujutsu.jpg",
+      seasons: [
+        {
+          num: 1,
+          cover: "Jujutsu1.jpg",
+          eps: [
+              { title: "Jujutsu Kaisen 0 Pelicula"},
+              { title: "Jujutsu Kaisen T1 Cap 1"},
+              { title: "Jujutsu Kaisen T1 Cap 2"},
+              { title: "Jujutsu Kaisen T1 Cap 3"},
+              { title: "Jujutsu Kaisen T1 Cap 4"},
+              { title: "Jujutsu Kaisen T1 Cap 5"},
+              { title: "Jujutsu Kaisen T1 Cap 6"},
+              { title: "Jujutsu Kaisen T1 Cap 7"},
+              { title: "Jujutsu Kaisen T1 Cap 8"},
+              { title: "Jujutsu Kaisen T1 Cap 9"},
+              { title: "Jujutsu Kaisen T1 Cap 10"},
+              { title: "Jujutsu Kaisen T1 Cap 11"},
+              { title: "Jujutsu Kaisen T1 Cap 12"},
+              { title: "Jujutsu Kaisen T1 Cap 13"},
+              { title: "Jujutsu Kaisen T1 Cap 14"},
+              { title: "Jujutsu Kaisen T1 Cap 15"},
+              { title: "Jujutsu Kaisen T1 Cap 16"},
+              { title: "Jujutsu Kaisen T1 Cap 17"},
+              { title: "Jujutsu Kaisen T1 Cap 18"},
+              { title: "Jujutsu Kaisen T1 Cap 19"},
+              { title: "Jujutsu Kaisen T1 Cap 20"},
+              { title: "Jujutsu Kaisen T1 Cap 21"},
+              { title: "Jujutsu Kaisen T1 Cap 22"},
+              { title: "Jujutsu Kaisen T1 Cap 23"},
+              { title: "Jujutsu Kaisen T1 Cap 24"},
+            ]
+          },
+          {
+            num: 2,
+            cover: "Jujutsu2.jpg",
+            eps: [
+              { title: "Jujutsu Kaisen T2 Cap 1"},
+              { title: "Jujutsu Kaisen T2 Cap 2"},
+              { title: "Jujutsu Kaisen T2 Cap 3"},
+              { title: "Jujutsu Kaisen T2 Cap 4"},
+              { title: "Jujutsu Kaisen T2 Cap 5"},
+              { title: "Jujutsu Kaisen T2 Cap 6"},
+              { title: "Jujutsu Kaisen T2 Cap 7"},
+              { title: "Jujutsu Kaisen T2 Cap 8"},
+              { title: "Jujutsu Kaisen T2 Cap 9"},
+              { title: "Jujutsu Kaisen T2 Cap 10"},
+              { title: "Jujutsu Kaisen T2 Cap 11"},
+              { title: "Jujutsu Kaisen T2 Cap 12"},
+              { title: "Jujutsu Kaisen T2 Cap 13"},
+              { title: "Jujutsu Kaisen T2 Cap 14"},
+              { title: "Jujutsu Kaisen T2 Cap 15"},
+              { title: "Jujutsu Kaisen T2 Cap 16"},
+              { title: "Jujutsu Kaisen T2 Cap 17"},
+              { title: "Jujutsu Kaisen T2 Cap 18"},
+              { title: "Jujutsu Kaisen T2 Cap 19"},
+              { title: "Jujutsu Kaisen T2 Cap 20"},
+              { title: "Jujutsu Kaisen T2 Cap 21"},
+              { title: "Jujutsu Kaisen T2 Cap 22"},
+              { title: "Jujutsu Kaisen T2 Cap 23"},
+          ]
+        }
+      ]
+    },
+
+      3: {
+        title: "Konosuba",
+        desc: "Kazuma Satou es un chico de preparatoria otaku y hikikomori que no suele salir de casa, pero cuando lo hace, un fatídico (y ridículo) accidente acaba con su vida. En el otro mundo aparece una diosa ante él y le propone comenzar de nuevo su vida en un mundo de magia y espada, pero las condiciones son un tanto peculiares, así que acabará comenzando de cero como aventurero y acompañado de una diosa.",
+        cover: "kono.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "konosuba.jpg",
+            eps: [
+              { title: "Konosuba T1 Cap 1"},
+              { title: "Konosuba T1 Cap 2"},
+              { title: "Konosuba T1 Cap 3"},
+              { title: "Konosuba T1 Cap 4"},
+              { title: "Konosuba T1 Cap 5"},
+              { title: "Konosuba T1 Cap 6"},
+              { title: "Konosuba T1 Cap 7"},
+              { title: "Konosuba T1 Cap 8"},
+              { title: "Konosuba T1 Cap 9"},
+              { title: "Konosuba T1 Cap 10"},
+              { title: "Konosuba T1 Cap 11"},
+            ]
+          },
+          {
+            num: 2,
+            cover: "KONO2.jpg",
+            eps: [
+              { title: "Konosuba T2 Cap 1"},
+              { title: "Konosuba T2 Cap 2"},
+              { title: "Konosuba T2 Cap 3"},
+              { title: "Konosuba T2 Cap 4"},
+              { title: "Konosuba T2 Cap 5"},
+              { title: "Konosuba T2 Cap 6"},
+              { title: "Konosuba T2 Cap 7"},
+              { title: "Konosuba T2 Cap 8"},
+              { title: "Konosuba T2 Cap 9"},
+              { title: "Konosuba T2 Cap 10"},
+              { title: "Konosuba T2 Cap 11"},
+              { title: "Konosuba Pelicula La Leyenda Carmesí"},
+
+            ]
+          },
+          {
+            num: 3,
+            cover: "kono3.png",
+            eps: [
+              { title: "Konosuba T3 Cap 1"},
+              { title: "Konosuba T3 Cap 2"},
+              { title: "Konosuba T3 Cap 3"},
+              { title: "Konosuba T3 Cap 4"},
+              { title: "Konosuba T3 Cap 5"},
+              { title: "Konosuba T3 Cap 6"},
+              { title: "Konosuba T3 Cap 7"},
+              { title: "Konosuba T3 Cap 8"},
+              { title: "Konosuba T3 Cap 9"},
+              { title: "Konosuba T3 Cap 10"},
+              { title: "Konosuba T3 Cap 11"},
+            ]
+          }
+        ]
+      },
+
+      4: {
+        title: "Re:Zero − Empezar vida en otro mundo",
+        desc: "Subaru Natsuki es un estudiante corriente de preparatoria que conoce a una hermosa chica de pelo plateado de otro mundo que lo rescata. Para devolverle el favor decide quedarse con ella, pero el destino con el que carga la muchacha es mucho más pesado de lo que Subaru puede imaginar. Los enemigos atacan sin descanso, uno tras otro, hasta que finalmente mueren tanto él como la chica. Subaru no quiere que la chica resulte herida, con lo que jura acabar con cualquier enemigo, con cualquier destino que le aguarde, siempre por protegerla.",
+        // portada
+        cover: "rezero.png",
+        seasons: [
+          {
+            num: 1,
+            cover: "re1.jpg",
+            eps: [
+
+              {title:"Re:Zero T1 Cap 1"},
+              {title:"Re:Zero T1 Cap 2"},
+              {title:"Re:Zero T1 Cap 3"},
+              {title:"Re:Zero T1 Cap 4"},
+              {title:"Re:Zero T1 Cap 5"},
+              {title:"Re:Zero T1 Cap 6"},
+              {title:"Re:Zero T1 Cap 7"},
+              {title:"Re:Zero T1 Cap 8"},
+              {title:"Re:Zero T1 Cap 9"},
+              {title:"Re:Zero T1 Cap 10"},
+              {title:"Re:Zero T1 Cap 11"},
+              {title:"Re:Zero T1 Cap 12"},
+              {title:"Re:Zero T1 Cap 13"},
+              {title:"Re:Zero T1 Cap 14"},
+              {title:"Re:Zero T1 Cap 15"},
+              {title:"Re:Zero T1 Cap 16"},
+              {title:"Re:Zero T1 Cap 17"},
+              {title:"Re:Zero T1 Cap 18"},
+              {title:"Re:Zero T1 Cap 19"},
+              {title:"Re:Zero T1 Cap 20"},
+              {title:"Re:Zero T1 Cap 21"},
+              {title:"Re:Zero T1 Cap 22"},
+              {title:"Re:Zero T1 Cap 23"},
+              {title:"Re:Zero T1 Cap 24"},
+              {title:"Re:Zero T1 Cap 25"},
+              {title:"Re:Zero OVA 1 Memory Snow"},
+              {title:"Re:Zero OVA 2 Frozen Bonds"},
+            ]
+          },
+          {
+            num: 2,
+            cover: "wermi.png",
+            eps: [
+              {title:"Re:Zero T2 Cap 1"},
+              {title:"Re:Zero T2 Cap 2"},
+              {title:"Re:Zero T2 Cap 3"},
+              {title:"Re:Zero T2 Cap 4"},
+              {title:"Re:Zero T2 Cap 5"},
+              {title:"Re:Zero T2 Cap 6"},
+              {title:"Re:Zero T2 Cap 7"},
+              {title:"Re:Zero T2 Cap 8"},
+              {title:"Re:Zero T2 Cap 9"},
+              {title:"Re:Zero T2 Cap 10"},
+              {title:"Re:Zero T2 Cap 11"},
+              {title:"Re:Zero T2 Cap 12"},
+              {title:"Re:Zero T2 Cap 13"},
+              {title:"Re:Zero T2 Cap 14"},
+              {title:"Re:Zero T2 Cap 15"},
+              {title:"Re:Zero T2 Cap 16"},
+              {title:"Re:Zero T2 Cap 17"},
+              {title:"Re:Zero T2 Cap 18"},
+              {title:"Re:Zero T2 Cap 19"},
+              {title:"Re:Zero T2 Cap 20"},
+              {title:"Re:Zero T2 Cap 21"},
+              {title:"Re:Zero T2 Cap 22"},
+              {title:"Re:Zero T2 Cap 23"},
+              {title:"Re:Zero T2 Cap 24"},
+              {title:"Re:Zero T2 Cap 25"},
+            ]
+          },
+          {
+            num: 3,
+            cover: "wermi3.png",
+            eps: [
+              {title:"Re:Zero T3 Cap 1"},
+              {title:"Re:Zero T3 Cap 2"},
+              {title:"Re:Zero T3 Cap 3"},
+              {title:"Re:Zero T3 Cap 4"},
+              {title:"Re:Zero T3 Cap 5"},
+              {title:"Re:Zero T3 Cap 6"},
+              {title:"Re:Zero T3 Cap 7"},
+              {title:"Re:Zero T3 Cap 8"},
+              {title:"Re:Zero T3 Cap 9"},
+              {title:"Re:Zero T3 Cap 10"},
+              {title:"Re:Zero T3 Cap 11"},
+              {title:"Re:Zero T3 Cap 12"},
+              {title:"Re:Zero T3 Cap 13"},
+              {title:"Re:Zero T3 Cap 14"},
+              {title:"Re:Zero T3 Cap 15"},
+              {title:"Re:Zero T3 Cap 16"},
+            ]
+          }
+        ]
+      },
+      5: {
+        title: "Mushoku Tensei",
+        desc: "Cuando un autobús atropella a un joven de 34 años que no ha logrado mucho en su vida, su historia no termina ahí. Habiéndose reencarnado en un niño, Rudy aprovechará cada oportunidad para vivir la vida que siempre quiso. ¡Con la ayuda de sus amigos, unas habilidades mágicas recién adquiridas, y el coraje para hacer las cosas que siempre ha soñado, se embarca en una aventura épica, con su experiencia pasada intacta!",
+        cover: "mushoku.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "mushoku11.jpg",
+            eps: [
+              { title: "Mushoku Tensei T1 Cap 1"},
+              { title: "Mushoku Tensei T1 Cap 2"},
+              { title: "Mushoku Tensei T1 Cap 3"},
+              { title: "Mushoku Tensei T1 Cap 4"},
+              { title: "Mushoku Tensei T1 Cap 5"},
+              { title: "Mushoku Tensei T1 Cap 6"},
+              { title: "Mushoku Tensei T1 Cap 7"},
+              { title: "Mushoku Tensei T1 Cap 8"},
+              { title: "Mushoku Tensei T1 Cap 9"},
+              { title: "Mushoku Tensei T1 Cap 10"},
+              { title: "Mushoku Tensei T1 Cap 11"},
+              { title: "Mushoku Tensei T1 Cap 12"},
+              { title: "Mushoku Tensei T1 Cap 13"},
+              { title: "Mushoku Tensei T1 Cap 14"},
+              { title: "Mushoku Tensei T1 Cap 15"},
+              { title: "Mushoku Tensei T1 Cap 16"},
+              { title: "Mushoku Tensei T1 Cap 17"},
+              { title: "Mushoku Tensei T1 Cap 18"},
+              { title: "Mushoku Tensei T1 Cap 19"},
+              { title: "Mushoku Tensei T1 Cap 20"},
+              { title: "Mushoku Tensei T1 Cap 21"},
+              { title: "Mushoku Tensei T1 Cap 22"},
+              { title: "Mushoku Tensei T1 Cap 23"},
+              { title: "Mushoku Tensei T1 OVA 1 Eris, La Cazaduendes"},
+            ]
+          },
+          {
+            num: 2,
+            cover: "mushoku22.jpg",
+            eps: [
+              { title: "Mushoku Tensei T1 Cap 0"},
+              { title: "Mushoku Tensei T1 Cap 1"},
+              { title: "Mushoku Tensei T1 Cap 2"},
+              { title: "Mushoku Tensei T1 Cap 3"},
+              { title: "Mushoku Tensei T1 Cap 4"},
+              { title: "Mushoku Tensei T1 Cap 5"},
+              { title: "Mushoku Tensei T1 Cap 6"},
+              { title: "Mushoku Tensei T1 Cap 7"},
+              { title: "Mushoku Tensei T1 Cap 8"},
+              { title: "Mushoku Tensei T1 Cap 9"},
+              { title: "Mushoku Tensei T1 Cap 10"},
+              { title: "Mushoku Tensei T1 Cap 11"},
+              { title: "Mushoku Tensei T1 Cap 12"},
+              { title: "Mushoku Tensei T1 Cap 13"},
+              { title: "Mushoku Tensei T1 Cap 14"},
+              { title: "Mushoku Tensei T1 Cap 15"},
+              { title: "Mushoku Tensei T1 Cap 16"},
+              { title: "Mushoku Tensei T1 Cap 17"},
+              { title: "Mushoku Tensei T1 Cap 18"},
+              { title: "Mushoku Tensei T1 Cap 19"},
+              { title: "Mushoku Tensei T1 Cap 20"},
+              { title: "Mushoku Tensei T1 Cap 21"},
+              { title: "Mushoku Tensei T1 Cap 22"},
+              { title: "Mushoku Tensei T1 Cap 23"},
+              { title: "Mushoku Tensei T1 Cap 24"},
+            ]
+          }
+        ]
+      },
+      6: {
+        title: "Tensei Shitara Slime Datta Ken",
+        desc: "Subaru Natsuki es un estudiante corriente de preparatoria que conoce a una hermosa chica de pelo plateado de otro mundo que lo rescata. Para devolverle el favor decide quedarse con ella, pero el destino con el que carga la muchacha es mucho más pesado de lo que Subaru puede imaginar. Los enemigos atacan sin descanso, uno tras otro, hasta que finalmente mueren tanto él como la chica. Subaru no quiere que la chica resulte herida, con lo que jura acabar con cualquier enemigo, con cualquier destino que le aguarde, siempre por protegerla.",
+        // portada
+        cover: "slime.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "tensura.jpg",
+            eps: [
+
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 1"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 2"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 3"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 4"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 5"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 6"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 7"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 8"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 9"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 10"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 11"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 12"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 13"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 14"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 15"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 16"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 17"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 18"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 19"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 20"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 21"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 22"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 23"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 24"},
+              {title:"Tensei Shitara Slime Datta Ken T1 Cap 25"},
+              {title:"Tensei Shitara Slime Datta Ken OVA 1"},
+              {title:"Tensei Shitara Slime Datta Ken OVA 2"},
+              {title:"Tensei Shitara Slime Datta Ken OVA 3"},
+              {title:"Tensei Shitara Slime Datta Ken OVA 4"},
+              {title:"Tensei Shitara Slime Datta Ken OVA 5"},
+              {title:"Tensei Shitara Slime Datta Ken Coleus no Yume ESPECIAL 1"},
+              {title:"Tensei Shitara Slime Datta Ken Coleus no Yume ESPECIAL 2"},
+              {title:"Tensei Shitara Slime Datta Ken Coleus no Yume ESPECIAL 3"},
+            ]
+          },
+          {
+            num: 2,
+            cover: "tensura22.jpg",
+            eps: [
+
+              {title:"Tensura Nikki Tensei shitara Slime Datta Ken Cap 1"},
+              {title:"Tensura Nikki Tensei shitara Slime Datta Ken Cap 2"},
+              {title:"Tensura Nikki Tensei shitara Slime Datta Ken Cap 3"},
+              {title:"Tensura Nikki Tensei shitara Slime Datta Ken Cap 4"},
+              {title:"Tensura Nikki Tensei shitara Slime Datta Ken Cap 5"},
+              {title:"Tensura Nikki Tensei shitara Slime Datta Ken Cap 6"},
+              {title:"Tensura Nikki Tensei shitara Slime Datta Ken Cap 7"},
+              {title:"Tensura Nikki Tensei shitara Slime Datta Ken Cap 8"},
+              {title:"Tensura Nikki Tensei shitara Slime Datta Ken Cap 9"},
+              {title:"Tensura Nikki Tensei shitara Slime Datta Ken Cap 10"},
+              {title:"Tensura Nikki Tensei shitara Slime Datta Ken Cap 11"},
+              {title:"Tensura Nikki Tensei shitara Slime Datta Ken Cap 12"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 1"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 2"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 3"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 4"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 5"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 6"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 7"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 8"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 9"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 10"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 11"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 12"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 13"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 14"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 15"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 16"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 17"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 18"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 19"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 20"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 21"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 22"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 23"},
+              {title:"Tensei Shitara Slime Datta Ken T2 Cap 24"},
+              {title:"Tensei Shitara Slime Datta Ken  PELICULA 1 EL VINCULO ESCARLATA"},
+            ]
+          },
+          {
+            num: 3,
+            cover: "tensura3.jpg",
+            eps: [
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 0"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 1"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 2"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 3"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 4"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 5"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 6"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 7"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 8"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 9"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 10"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 11"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 12"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 13"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 14"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 15"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 16"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 17"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 18"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 19"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 20"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 21"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 22"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 23"},
+              {title:"Tensei Shitara Slime Datta Ken T3 Cap 24"},
+            ]
+          }
+        ]
+      },
+      7: {
+        title: "Saga of Tanya the Evil (Youjo Senki)",
+        desc: "Junio del año 1923. Una joven de cabello rubio y ojos azules, Tanya Degurechaff, ha entrado en la selección final de la Academia Militar Imperial y entrena en el distrito militar norte, Norden Theater, como parte de su servicio. Su entrenamiento, el primer paso hacia una brillante carrera como maga de la aviación, debería haber sido un camino de rosas, pero... las cosas toman un tinte inesperado. Estalla guerra entre el Imperio y la vecina Federación cuando esta viola las fronteras del Imperio. Un ataque sorpresa de las fuerzas de la Federación obliga a Tanya a entrar en combate.",
+        cover: "Tanya1.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "tanya.jpg",
+            eps: [
+              { title: "Saga of Tanya the Evil (Yōjo Senki) T1 Cap 1"},
+              { title: "Saga of Tanya the Evil (Yōjo Senki) T1 Cap 2"},
+              { title: "Saga of Tanya the Evil (Yōjo Senki) T1 Cap 3"},
+              { title: "Saga of Tanya the Evil (Yōjo Senki) T1 Cap 4"},
+              { title: "Saga of Tanya the Evil (Yōjo Senki) T1 Cap 5"},
+              { title: "Saga of Tanya the Evil (Yōjo Senki) T1 Cap 6"},
+              { title: "Saga of Tanya the Evil (Yōjo Senki) T1 Cap 7"},
+              { title: "Saga of Tanya the Evil (Yōjo Senki) T1 Cap 8"},
+              { title: "Saga of Tanya the Evil (Yōjo Senki) T1 Cap 9"},
+              { title: "Saga of Tanya the Evil (Yōjo Senki) T1 Cap 10"},
+              { title: "Saga of Tanya the Evil (Yōjo Senki) T1 Cap 11"},
+              { title: "Saga of Tanya the Evil (Yōjo Senki) T1 Cap 12"},
+              { title: "Saga of Tanya the Evil (Yōjo Senki) Pelicula"},
+              { title: "Saga of Tanya the Evil (Yōjo Senki) OVA SUB"},
+            ]
+          }
+        ]
+      },
+      9: {
+        title: "To Be Hero X",
+        desc: "Este es un mundo en el que los mejores héroes son aclamados. El \"Valor de Confianza\" es lo que crean superhéroes. Si la gente cree que un héroe \"puede volar\", adquirirá la capacidad de volar. También ocurre al revés: aunque un héroe tenga poderes, si baja su Valor de Confianza, también perderá sus poderes. El Valor de Confianza se mide en forma de datos y se usa para clasificar a los héroes. Una vez cada dos años, los mejores héroes se reúnen para competir en un torneo especial. El Valor de Confianza de los participantes en el torneo varía en función de su rendimiento en el mismo, actualizándose posteriormente la clasificación, y al héroe que queda en lo más alto se lo conoce como \"X\"...",
+        cover: "hero11.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "hero.jpg",
+            eps: [
+              { title: "To Be Hero X T1 Cap 1"},
+              { title: "To Be Hero X T1 Cap 2"},
+              { title: "To Be Hero X T1 Cap 3"},
+              { title: "To Be Hero X T1 Cap 4"},
+              { title: "To Be Hero X T1 Cap 5"},
+              { title: "To Be Hero X T1 Cap 6"},
+              { title: "To Be Hero X T1 Cap 7"},
+              { title: "To Be Hero X T1 Cap 8"},
+              { title: "To Be Hero X T1 Cap 9"},
+              { title: "To Be Hero X T1 Cap 10"},
+              { title: "To Be Hero X T1 Cap 11"},
+              { title: "To Be Hero X T1 Cap 12"},
+              { title: "To Be Hero X T1 Cap 13"},
+              { title: "To Be Hero X T1 Cap 14"},
+            ]
+          }
+        ]
+      },
+      12: {
+        title: "Tsue to Tsurugi no Wistoria",
+        desc: "Will es un chico muy trabajador que se inscribe en una academia de magia con la esperanza de convertirse en un gran hechicero. Por desgracia, su plan tiene un fallo crítico: que no tiene la habilidad de usar magia. Las miradas de desprecio de sus compañeros e instructores hacen que Will se desanime en ocasiones, pero sigue adelante con una fuerza de voluntad inquebrantable. No puede usar una varita, pero puede blandir su espada en su intento por llegar a lo más alto de un mundo dominado por la magia. Solo tiene que creer en sus propios puntos fuertes y recordar la promesa que le hizo a alguien muy importante para él...",
+        cover: "wistoria.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "wistoria1.jpg",
+            eps: [
+              { title: "Wistoria: Wand and Sword T1 Cap 1"},
+              { title: "Wistoria: Wand and Sword T1 Cap 2"},
+              { title: "Wistoria: Wand and Sword T1 Cap 3"},
+              { title: "Wistoria: Wand and Sword T1 Cap 4"},
+              { title: "Wistoria: Wand and Sword T1 Cap 5"},
+              { title: "Wistoria: Wand and Sword T1 Cap 6"},
+              { title: "Wistoria: Wand and Sword T1 Cap 7"},
+              { title: "Wistoria: Wand and Sword T1 Cap 8"},
+              { title: "Wistoria: Wand and Sword T1 Cap 9"},
+              { title: "Wistoria: Wand and Sword T1 Cap 10"},
+              { title: "Wistoria: Wand and Sword T1 Cap 11"},
+              { title: "Wistoria: Wand and Sword T1 Cap 12"},
+            ]
+          }
+        ]
+      },
+
+      13: {
+        title: "Izure Saikyou no Renkinjutsushi",
+        desc: "Takumi Iruma termina siendo arrastrado a una invocación heroica, aun cuando él no es ningún héroe. Llamado por error a Mildgard, un mundo fantástico de magia y espadas, Takumi ve en esto la oportunidad de empezar desde cero. Aunque anhela una vida pacífica, la diosa Nolyn le concede la “Alquimia”, una habilidad sumamente poderosa que le permite crear casi cualquier cosa, desde espadas sagradas hasta naves voladoras.",
+        cover: "Izure.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "IZU.PNG",
+            eps: [
+              { title: "Izure Saikyou no Renkinjutsushi T1 Cap 1"},
+              { title: "Izure Saikyou no Renkinjutsushi T1 Cap 2"},
+              { title: "Izure Saikyou no Renkinjutsushi T1 Cap 3"},
+              { title: "Izure Saikyou no Renkinjutsushi T1 Cap 4"},
+              { title: "Izure Saikyou no Renkinjutsushi T1 Cap 5"},
+              { title: "Izure Saikyou no Renkinjutsushi T1 Cap 6"},
+              { title: "Izure Saikyou no Renkinjutsushi T1 Cap 7"},
+              { title: "Izure Saikyou no Renkinjutsushi T1 Cap 8"},
+              { title: "Izure Saikyou no Renkinjutsushi T1 Cap 9"},
+              { title: "Izure Saikyou no Renkinjutsushi T1 Cap 10"},
+              { title: "Izure Saikyou no Renkinjutsushi T1 Cap 11"},
+              { title: "Izure Saikyou no Renkinjutsushi T1 Cap 12"},
+            ]
+          }
+        ]
+      },
+
+      14: {
+        title: "Alya Sometimes Hides Her Feelings in Russian",
+        desc: "Alya es una estudiante recién transferida que disfruta de tener buenas calificaciones y mucha popularidad en su nueva preparatoria, aunque lo habitual es que luzca muy fría. No suele hablar nunca con un compañero de clase muy estudioso llamado Kuza Masachika, y cuando lo hace, es para decirle algún halago en ruso. Lo que ella no sabe es que Kuze entiende el ruso, aunque hace ver que no. ¡Comprobemos hasta dónde llega esta curiosa historia de amor!",
+        cover: "alia.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "alya1.jpg",
+            eps: [
+              { title: "Alya Sometimes Hides Her Feelings in Russian T1 Cap 1"},
+              { title: "Alya Sometimes Hides Her Feelings in Russian T1 Cap 2"},
+              { title: "Alya Sometimes Hides Her Feelings in Russian T1 Cap 3"},
+              { title: "Alya Sometimes Hides Her Feelings in Russian T1 Cap 4"},
+              { title: "Alya Sometimes Hides Her Feelings in Russian T1 Cap 5"},
+              { title: "Alya Sometimes Hides Her Feelings in Russian T1 Cap 6"},
+              { title: "Alya Sometimes Hides Her Feelings in Russian T1 Cap 7"},
+              { title: "Alya Sometimes Hides Her Feelings in Russian T1 Cap 8"},
+              { title: "Alya Sometimes Hides Her Feelings in Russian T1 Cap 9"},
+              { title: "Alya Sometimes Hides Her Feelings in Russian T1 Cap 10"},
+              { title: "Alya Sometimes Hides Her Feelings in Russian T1 Cap 11"},
+              { title: "Alya Sometimes Hides Her Feelings in Russian T1 Cap 12"},
+            ]
+          }
+        ]
+      },
+
+      15: {
+        title: "Reborn as a Vending Machine",
+        desc: "Después de morir en un accidente de tráfico, me encuentro de pie cerca de un lago desconocido. No puedo moverme, no me oigo mi voz, y cuando trato de gritar, ¡salen palabras inesperadas! ¡Parece que me he convertido en una máquina expendedora! Solo puedo hacer lo que las máquinas expendedoras reales pueden hacer. No puedo moverme solo, y no hay forma de tener una conversación significativa. ¿Cómo voy a sobrevivir en una mazmorra de un mundo de fantasía como este?",
+        cover: "jidou.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "jidou1.jpg",
+            eps: [
+              { title: "Reborn as a Vending Machine, I Now Wander the Dungeon T1 Cap 1"},
+              { title: "Reborn as a Vending Machine, I Now Wander the Dungeon T1 Cap 2"},
+              { title: "Reborn as a Vending Machine, I Now Wander the Dungeon T1 Cap 3"},
+              { title: "Reborn as a Vending Machine, I Now Wander the Dungeon T1 Cap 4"},
+              { title: "Reborn as a Vending Machine, I Now Wander the Dungeon T1 Cap 5"},
+              { title: "Reborn as a Vending Machine, I Now Wander the Dungeon T1 Cap 6"},
+              { title: "Reborn as a Vending Machine, I Now Wander the Dungeon T1 Cap 7"},
+              { title: "Reborn as a Vending Machine, I Now Wander the Dungeon T1 Cap 8"},
+              { title: "Reborn as a Vending Machine, I Now Wander the Dungeon T1 Cap 9"},
+              { title: "Reborn as a Vending Machine, I Now Wander the Dungeon T1 Cap 10"},
+              { title: "Reborn as a Vending Machine, I Now Wander the Dungeon T1 Cap 11"},
+              { title: "Reborn as a Vending Machine, I Now Wander the Dungeon T1 Cap 12"},
+              { title: "Reborn as a Vending Machine, I Now Wander the Dungeon T1 Cap 13"},
+            ]
+          }
+        ]
+      },   
+      16: {
+        title: "Kimi to Boku no Saigo no Senjou",
+        desc: "Dos enemigos enfrentados en un conflicto encuentran una base común, lo que los convierte en potenciales traidores para sus países y amantes desgarrados por la guerra.",
+        cover: "kimi22222.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "kimix.jpg",
+            eps: [
+              { title: "Kimi to Boku no Saigo no Senjou T1 Cap 1"},
+              { title: "Kimi to Boku no Saigo no Senjou T1 Cap 2"},
+              { title: "Kimi to Boku no Saigo no Senjou T1 Cap 3"},
+              { title: "Kimi to Boku no Saigo no Senjou T1 Cap 4"},
+              { title: "Kimi to Boku no Saigo no Senjou T1 Cap 5"},
+              { title: "Kimi to Boku no Saigo no Senjou T1 Cap 6"},
+              { title: "Kimi to Boku no Saigo no Senjou T1 Cap 7"},
+              { title: "Kimi to Boku no Saigo no Senjou T1 Cap 8"},
+              { title: "Kimi to Boku no Saigo no Senjou T1 Cap 9"},
+              { title: "Kimi to Boku no Saigo no Senjou T1 Cap 10"},
+              { title: "Kimi to Boku no Saigo no Senjou T1 Cap 11"},
+              { title: "Kimi to Boku no Saigo no Senjou T1 Cap 12"},
+            ]
+          },
+          {
+            num: 2,
+            cover: "kimi22.jpg",
+            eps: [
+              { title: "Kimi to Boku no Saigo no Senjou T2 Cap 1"},
+              { title: "Kimi to Boku no Saigo no Senjou T2 Cap 2"},
+              { title: "Kimi to Boku no Saigo no Senjou T2 Cap 3"},
+              { title: "Kimi to Boku no Saigo no Senjou T2 Cap 4"},
+              { title: "Kimi to Boku no Saigo no Senjou T2 Cap 5"},
+              { title: "Kimi to Boku no Saigo no Senjou T2 Cap 6"},
+              { title: "Kimi to Boku no Saigo no Senjou T2 Cap 7"},
+              { title: "Kimi to Boku no Saigo no Senjou T2 Cap 8"},
+              { title: "Kimi to Boku no Saigo no Senjou T2 Cap 9"},
+              { title: "Kimi to Boku no Saigo no Senjou T2 Cap 10"},
+              { title: "Kimi to Boku no Saigo no Senjou T2 Cap 11"},
+              { title: "Kimi to Boku no Saigo no Senjou T2 Cap 12"},
+            ]
+          }
+        ]
+      },
+      17: {
+        title: "The Gorila God's Go- To Girl",
+        desc: "Ciel Phantomhive es el niño más poderoso de toda Inglaterra, pero carga con las cicatrices de un sufrimiento indescriptible. Obligado a presenciar el brutal asesinato de sus queridos padres, Ciel fue posteriormente secuestrado y violentamente torturado. Desesperado por poner fin a su sufrimiento, el niño entregó su alma a cambio de una oportunidad de venganza, uniéndose a la única persona en quien podía confiar: Sebastian, un demonio Butler invocado desde las profundidades del infierno. Juntos, recorrerán los callejones más oscuros de Londres con la misión de acabar con quienes hacen el mal.",
+        cover: "gorila11.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "gorila.jpg",
+            eps: [
+              { title: "The Gorila God's Go- To Girl T1 Cap 1"},
+              { title: "The Gorila God's Go- To Girl T1 Cap 2"},
+              { title: "The Gorila God's Go- To Girl T1 Cap 3"},
+              { title: "The Gorila God's Go- To Girl T1 Cap 4"},
+              { title: "The Gorila God's Go- To Girl T1 Cap 5"},
+              { title: "The Gorila God's Go- To Girl T1 Cap 6"},
+              { title: "The Gorila God's Go- To Girl T1 Cap 7"},
+              { title: "The Gorila God's Go- To Girl T1 Cap 8"},
+              { title: "The Gorila God's Go- To Girl T1 Cap 9"},
+              { title: "The Gorila God's Go- To Girl T1 Cap 10"},
+              { title: "The Gorila God's Go- To Girl T1 Cap 11"},
+              { title: "The Gorila God's Go- To Girl T1 Cap 12"},
+            ]
+          }
+        ]
+      },
+      18: {
+        title: "Chainsaw Man",
+        desc: "Denji es un adolescente que vive con un demonio motosierra llamado Pochita. Para pagar la deuda que le dejó su padre tras su muerte, ha tenido que ganarse el pan como puede matar demonios y vender sus cadáveres a la mafia, aunque su vida siempre ha sido miserable. Cuando una traición provoca la muerte de Denji, Pochita hace un contrato con él y Denji revive como Chainsaw Man, un ser humano con el corazón de un demonio.",
+        cover: "chaiw11.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "denji1.jpg",
+            eps: [
+              { title: "Chainsaw Man T1 Cap 1"},
+              { title: "Chainsaw Man T1 Cap 2"},
+              { title: "Chainsaw Man T1 Cap 3"},
+              { title: "Chainsaw Man T1 Cap 4"},
+              { title: "Chainsaw Man T1 Cap 5"},
+              { title: "Chainsaw Man T1 Cap 6"},
+              { title: "Chainsaw Man T1 Cap 7"},
+              { title: "Chainsaw Man T1 Cap 8"},
+              { title: "Chainsaw Man T1 Cap 9"},
+              { title: "Chainsaw Man T1 Cap 10"},
+              { title: "Chainsaw Man T1 Cap 11"},
+              { title: "Chainsaw Man T1 Cap 12"},
+            ]
+          }
+        ]
+      },
+
+      19: {
+        title: "Black Butler -Emerald Witch Arc",
+        desc: "Ciel Phantomhive es el niño más poderoso de toda Inglaterra, pero carga con las cicatrices de un sufrimiento indescriptible. Obligado a presenciar el brutal asesinato de sus queridos padres, Ciel fue posteriormente secuestrado y violentamente torturado. Desesperado por poner fin a su sufrimiento, el niño entregó su alma a cambio de una oportunidad de venganza, uniéndose a la única persona en quien podía confiar: Sebastian, un demonio Butler invocado desde las profundidades del infierno. Juntos, recorrerán los callejones más oscuros de Londres con la misión de acabar con quienes hacen el mal.",
+        cover: "bb1.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "bb11.jpg",
+            eps: [
+              { title: "Black Butler -Emerald Witch Arc T1 Cap 1"},
+              { title: "Black Butler -Emerald Witch Arc T1 Cap 2"},
+              { title: "Black Butler -Emerald Witch Arc T1 Cap 3"},
+              { title: "Black Butler -Emerald Witch Arc T1 Cap 4"},
+              { title: "Black Butler -Emerald Witch Arc T1 Cap 5"},
+              { title: "Black Butler -Emerald Witch Arc T1 Cap 6"},
+              { title: "Black Butler -Emerald Witch Arc T1 Cap 7"},
+              { title: "Black Butler -Emerald Witch Arc T1 Cap 8"},
+              { title: "Black Butler -Emerald Witch Arc T1 Cap 9"},
+              { title: "Black Butler -Emerald Witch Arc T1 Cap 10"},
+              { title: "Black Butler -Emerald Witch Arc T1 Cap 11"},
+              { title: "Black Butler -Emerald Witch Arc T1 Cap 12"},
+            ]
+          }
+        ]
+      },
+      20: {
+        title: "Overflow",
+        desc: "¡Puedo deslizarme lentamente, pero no podre desbordar todo mi amor! Un día, Kazushi Sudou recibe la visita de las hermanas Ayane y Kotone Shirakawa, sus dos hermosas amigas de la infancia. Aunque no tienen relación sanguínea, ambas lo llaman con cariño como «hermano». De la nada, y por venganza de Ayane, ambas hermanas deciden unirse a Kazushi en su pequeño baño, y terminan bañándose juntos. Entre el dulce aroma y espuma de baño, Kotone tiene un pequeño accidente con Kazushi y ambos terminan «conectados». ¿Podrá el pervertido Kazushi resistir a los encantos de estas hermosas hermanas?.",
+        cover: "overflow.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "overflow3.jpg",
+            eps: [
+              { title: "Overflow T1 Cap 1"},
+              { title: "Overflow T1 Cap 2"},
+              { title: "Overflow T1 Cap 3"},
+              { title: "Overflow T1 Cap 4"},
+              { title: "Overflow T1 Cap 5"},
+              { title: "Overflow T1 Cap 6"},
+              { title: "Overflow T1 Cap 7"},
+              { title: "Overflow T1 Cap 8"},
+            ]
+          }
+        ]
+      },
+      21: {
+        title: "Shiunji-ke no Kodomotachi",
+        desc: "¡Puedo deslizarme lentamente, pero no podre desbordar todo mi amor! Un día, Kazushi Sudou recibe la visita de las hermanas Ayane y Kotone Shirakawa, sus dos hermosas amigas de la infancia. Aunque no tienen relación sanguínea, ambas lo llaman con cariño como «hermano». De la nada, y por venganza de Ayane, ambas hermanas deciden unirse a Kazushi en su pequeño baño, y terminan bañándose juntos. Entre el dulce aroma y espuma de baño, Kotone tiene un pequeño accidente con Kazushi y ambos terminan «conectados». ¿Podrá el pervertido Kazushi resistir a los encantos de estas hermosas hermanas?.",
+        cover: "Shiux.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "shiu1.jpg",
+            eps: [
+              { title: "Shiunji-ke no Kodomotachi T1 Cap 1"},
+              { title: "Shiunji-ke no Kodomotachi T1 Cap 2"},
+              { title: "Shiunji-ke no Kodomotachi T1 Cap 3"},
+              { title: "Shiunji-ke no Kodomotachi T1 Cap 4"},
+              { title: "Shiunji-ke no Kodomotachi T1 Cap 5"},
+              { title: "Shiunji-ke no Kodomotachi T1 Cap 6"},
+              { title: "Shiunji-ke no Kodomotachi T1 Cap 7"},
+              { title: "Shiunji-ke no Kodomotachi T1 Cap 8"},
+              { title: "Shiunji-ke no Kodomotachi T1 Cap 9"},
+              { title: "Shiunji-ke no Kodomotachi T1 Cap 10"},
+              { title: "Shiunji-ke no Kodomotachi T1 Cap 11"},
+              { title: "Shiunji-ke no Kodomotachi T1 Cap 12"},
+            ]
+          }
+        ]
+      },
+      23: {
+        title: "Kanchigai no Atelier Meister",
+        desc: "Kurt Rockhans es un bondadoso chico de los recados del grupo de héroes, el Colmillo de Dragón Llameante. Un día, lo destierran del grupo y descubre que tiene el rango más bajo en combate. Para ganarse la vida, Kurt acepta diversos trabajos y descubre que posee habilidades asombrosas. Aunque aún no lo sabe, Kurt posee habilidades de rango SSS en todo menos en la lucha, y se embarca en una nueva aventura.",
+        cover: "atelier1.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "atelier.jpg",
+            eps: [
+              { title: "Kanchigai no Atelier Meister T1 Cap 1"},
+              { title: "Kanchigai no Atelier Meister T1 Cap 2"},
+              { title: "Kanchigai no Atelier Meister T1 Cap 3"},
+              { title: "Kanchigai no Atelier Meister T1 Cap 4"},
+              { title: "Kanchigai no Atelier Meister T1 Cap 5"},
+              { title: "Kanchigai no Atelier Meister T1 Cap 6"},
+              { title: "Kanchigai no Atelier Meister T1 Cap 7"},
+              { title: "Kanchigai no Atelier Meister T1 Cap 8"},
+              { title: "Kanchigai no Atelier Meister T1 Cap 9"},
+              { title: "Kanchigai no Atelier Meister T1 Cap 10"},
+              { title: "Kanchigai no Atelier Meister T1 Cap 11"},
+              { title: "Kanchigai no Atelier Meister T1 Cap 12"},
+            ]
+          }
+        ]
+      },
+      24: {
+        title: "Definitivamente. ¡No me gusta mi hermano para nada!",
+        desc: "Shuusuke Takanashi es un joven apasionado por coleccionar todo tipo de contenido lascivo, pero se enfrenta a un dilema cuando su encantadora hermana menor, Nao, busca atraer su atención como mujer. Para su fortuna, o quizás su infortunio, reaparece Iroha Tsuchiura, una amiga de la infancia de Shuusuke a quien no había visto en más de 10 años. Sin embargo, Iroha comienza a seducirlo y a mostrar un lado inusual. Así da comienzo a un triángulo amoroso entre Nao, Iroha y Shuusuke, al que se une Mayuka Kondou, compañera de clase y amante de historias de amor entre chicos, desencadenando una comedia romántica única.",
+        cover: "oni.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "oni1.jpg",
+            eps: [
+              { title: "Definitivamente. ¡No me gusta mi hermano para nada! T1 Cap 1"},
+              { title: "Definitivamente. ¡No me gusta mi hermano para nada! T1 Cap 2"},
+              { title: "Definitivamente. ¡No me gusta mi hermano para nada! T1 Cap 3"},
+              { title: "Definitivamente. ¡No me gusta mi hermano para nada! T1 Cap 4"},
+              { title: "Definitivamente. ¡No me gusta mi hermano para nada! T1 Cap 5"},
+              { title: "Definitivamente. ¡No me gusta mi hermano para nada! T1 Cap 6"},
+              { title: "Definitivamente. ¡No me gusta mi hermano para nada! T1 Cap 7"},
+              { title: "Definitivamente. ¡No me gusta mi hermano para nada! T1 Cap 8"},
+              { title: "Definitivamente. ¡No me gusta mi hermano para nada! T1 Cap 9"},
+              { title: "Definitivamente. ¡No me gusta mi hermano para nada! T1 Cap 10"},
+              { title: "Definitivamente. ¡No me gusta mi hermano para nada! T1 Cap 11"},
+              { title: "Definitivamente. ¡No me gusta mi hermano para nada! T1 Cap 12"},
+              { title: "Definitivamente. ¡No me gusta mi hermano para nada! T1 Cap 13"},
+            ]
+          }
+        ]
+      },
+      30: {
+        title: "Shoujo Ramune",
+        desc: "Ha sido unos meses desde Kiyoshi renunció a su trabajo para cumplir su sueño de tener un dagashis-ya en las afueras de Tokio. Él quería vivir el resto de su vida viendo niñas. Su plan fue un éxito, con las niñas de la escuela cercana que visitan su tienda todos los días y hablaban con él felizmente como amigos. Sin embargo, poco después que las vacaciones de verano comenzaran, se dio cuenta que una de sus clientes habituales, Chie, robaba algunos dulces. A pesar de que no había mucha pérdida, no podía dejar que se saliera con la suya. Cuando se le preguntó, ella dijo que le iba a compensar por ello mediante el trabajo a tiempo parcial en su tienda. Así comienza sus vacaciones de verano con pequeñas niñas.",
+        cover: "shoujo.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "shoujo2.jpg",
+            eps: [
+              { title: "Shoujo Ramune ESPAÑOL T1 Cap 1"},
+              { title: "Shoujo Ramune SUB T1 Cap 1"},
+              { title: "Shoujo Ramune SUB T1 Cap 2"},
+              { title: "Shoujo Ramune SUB T1 Cap 3"},
+              { title: "Shoujo Ramune SUB T1 Cap 4"},
+            ]
+          }
+        ]
+      }
+
+
+
+
+    };
+
+
+    // 2) Leer parámetro id
+    const params = new URLSearchParams(location.search);
+    const id = Number(params.get('id') || params.get('anime'));
+
+    // 3) Renderizado
+    (function render(){
+      const c = document.getElementById('contenido');
+      const a = data[id];
+      if (!a) {
+        // Si no hay datos, mostramos solo "Próximamente."
+        c.innerHTML = '<p class="prox">Próximamente.</p>';
+        return;
+      }
+      // Si existe, renderizamos portada, título, descripción y temporadas
+      let html = `
+        <div class="anime-cover">
+          <img src="${a.cover}" alt="Portada ${a.title}">
+        </div>
+        <h1>${a.title}</h1>
+        <p class="desc">${a.desc}</p>
+      `;
+      a.seasons.forEach(s => {
+        html += `
+          <details>
+            <summary>Temporada ${s.num}</summary>
+            <div class="season-content">
+              <img src="${s.cover}" alt="Temporada ${s.num}">
+              <ul class="video-list">
+                ${s.eps.map((ep,i) => `
+                  <li><a href="video-player.html?anime=${id}&s=${s.num}&e=${i+1}">
+                    ${ep.title}
+                  </a></li>
+                `).join('')}
+              </ul>
+            </div>
+          </details>
+        `;
+      });
+      c.innerHTML = html;
+    })();
+
+
+    // 4) Pausar todos los audios
+    const audios = ['dd-ost','jj-ost','kb-music','rz-ost','mt-ost','ts-ost','st-ost','wi-ost','iz-ost','herox-ost','al-ost','ra-ost','ki-ost','gorila-ost','bb-ost','ov-ost','shi-ost','aliester-ost','oni-ost','sr-ost']
+      .map(i => document.getElementById(i));
+    audios.forEach(a=>{ a.pause(); a.currentTime=0; });
+
+    // 5) Reproducir el OST al primer clic
+    const playMap = {1:'dd-ost',2:'jj-ost',3:'kb-music',4:'rz-ost',5:'mt-ost',6:'ts-ost',7:'st-ost',9:'herox-ost',12:'wi-ost',13:'iz-ost',14:'al-ost',15:'ra-ost',16:'ki-ost',17:'gorila-ost',19:'bb-ost',20:'ov-ost',21:'shi-ost',23:'aliester-ost',24:'oni-ost',30:'sr-ost'};
+    if (playMap[id]) {
+      document.addEventListener('click', ()=>{
+        const a = document.getElementById(playMap[id]);
+        a.volume = 0.5;
+        a.play().catch(()=>{});
+      }, { once:true });
+    }
+
+    // 4) Botón Compartir con animación resistente a múltiples clics
+    const shareBtn = document.getElementById('share-detail');
+    const toast    = document.getElementById('toast');
+    let inTO, outTO;
+    shareBtn.addEventListener('click', () => {
+      const url = `${location.origin}${location.pathname}?id=${id}`;
+      navigator.clipboard.writeText(url).then(() => {
+        clearTimeout(inTO);
+        clearTimeout(outTO);
+        toast.style.display   = 'flex';
+        toast.style.animation = 'toast-in 0.4s ease-out forwards';
+        inTO = setTimeout(() => {
+          toast.style.animation = 'toast-out 0.7s ease-in forwards';
+          outTO = setTimeout(()=>{ toast.style.display='none'; }, 700);
+        }, 3000);
+      });
+    });
+  </script>
+</body>
+</html>

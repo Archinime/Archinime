@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <!-- Añadido id para cambiar dinámicamente -->
+  <!-- Añadido id para cambiar dinámicamente si fuera necesario -->
   <meta name="viewport" id="viewport-meta" content="width=device-width,initial-scale=1">
   <title>Archinime</title>
   <style>
@@ -28,39 +28,6 @@
       will-change: background;
     }
 
-    /* ——— Modal sugerencia modo escritorio ——— */
-    #desktop-modal {
-      display: none;
-      position: fixed; top:0; left:0;
-      width:100%; height:100%;
-      background: rgba(0,0,0,0.85);
-      z-index: 999;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 1rem;
-    }
-    #desktop-modal .modal-content {
-      background: #111;
-      padding: 2rem;
-      border-radius: 1rem;
-      max-width: 90%;
-      box-shadow: 0 0 20px rgba(0,0,0,0.8);
-    }
-    #desktop-modal button {
-      margin-top: 1rem;
-      padding: .75rem 1.5rem;
-      font-size: 1.1rem;
-      border: none;
-      border-radius: .5rem;
-      cursor: pointer;
-      background: #0ff;
-      color: #000;
-      transition: transform .2s;
-    }
-    #desktop-modal button:hover {
-      transform: scale(1.05);
-    }
 
     /* Botón circular de apoyo */
     #support {
@@ -160,14 +127,6 @@
   </style>
 </head>
 <body>
-
-  <!-- Modal sugerencia modo escritorio -->
-  <div id="desktop-modal">
-    <div class="modal-content">
-      <p>¿Quieres cambiar a <strong>modo escritorio</strong> para una mejor experiencia?</p>
-      <button id="accept-desktop">Aceptar</button>
-    </div>
-  </div>
 
   <!-- Vídeo de fondo -->
   <video id="bg-video" autoplay loop muted playsinline>
@@ -292,80 +251,70 @@
     ];
 
 
-    // Debounce para búsquedas
-    function debounce(fn, wait) {
-      let timeout;
-      return (...args) => {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => fn(...args), wait);
-      };
-    }
-    // Creamos la versión debounced de filtro()
-    const debouncedFiltro = debounce(filtro, 200);
+  function debounce(fn, wait) {
+    let timeout;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => fn(...args), wait);
+    };
+  }
+  const debouncedFiltro = debounce(filtro, 200);
 
-    function render(list) {
-      const grid = document.getElementById('grid');
-      grid.innerHTML = list.map(a => `
-        <div class="card" onclick="location='anime-detail.html?id=${a.id}'">
-          <img src="${a.img}" alt="${a.title}">
-          <div class="info">
-            <strong>${a.title}</strong>
-            <span>⭐ ${a.rating.toFixed(1)}</span>
-          </div>
+  function render(list) {
+    const grid = document.getElementById('grid');
+    grid.innerHTML = list.map(a => `
+      <div class="card" onclick="location='anime-detail.html?id=${a.id}'">
+        <img src="${a.img}" alt="${a.title}">
+        <div class="info">
+          <strong>${a.title}</strong>
+          <span>⭐ ${a.rating.toFixed(1)}</span>
         </div>
-      `).join('');
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            e.target.classList.add('visible');
-            observer.unobserve(e.target);
-          }
-        });
-      }, {threshold:0.2});
-      document.querySelectorAll('.card').forEach(c => observer.observe(c));
-    }
-
-    function filtro(){
-      const q   = document.getElementById('search').value.toLowerCase();
-      const g   = document.getElementById('genre-select').value;
-      const cat = document.getElementById('rating-select').value;
-      const filtrados = animes.filter(a => {
-        const byText   = a.title.toLowerCase().startsWith(q);
-        const byGenre  = !g || a.genres.includes(g);
-        let   byRating = true;
-        if(cat==='excellent') byRating = a.rating >= 4.8;
-        else if(cat==='good')    byRating = a.rating >= 4.6 && a.rating < 4.8;
-        else if(cat==='regular') byRating = a.rating < 4.6;
-        return byText && byGenre && byRating;
+      </div>
+    `).join('');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
       });
-      render(filtrados);
-    }
+    }, {threshold:0.2});
+    document.querySelectorAll('.card').forEach(c => observer.observe(c));
+  }
 
-    // Primer render
-    render(animes);
-
-    // Detectar móvil/tablet y mostrar modal
-    function isMobileOrTablet() {
-      return /Mobi|Android|Tablet|iPad|iPhone/.test(navigator.userAgent);
-    }
-    window.addEventListener('load', () => {
-      if (isMobileOrTablet()) {
-        document.getElementById('desktop-modal').style.display = 'flex';
-      }
+  function filtro(){
+    const q   = document.getElementById('search').value.toLowerCase();
+    const g   = document.getElementById('genre-select').value;
+    const cat = document.getElementById('rating-select').value;
+    const filtrados = animes.filter(a => {
+      const byText   = a.title.toLowerCase().startsWith(q);
+      const byGenre  = !g || a.genres.includes(g);
+      let byRating = true;
+      if(cat==='excellent') byRating = a.rating >= 4.8;
+      else if(cat==='good')    byRating = a.rating >= 4.6 && a.rating < 4.8;
+      else if(cat==='regular') byRating = a.rating < 4.6;
+      return byText && byGenre && byRating;
     });
+    render(filtrados);
+  }
 
-    // Al aceptar, ajusta viewport y recarga
-    document.getElementById('accept-desktop').addEventListener('click', () => {
-      document.getElementById('viewport-meta')
-        .setAttribute('content', 'width=1200');
-      location.reload();
-    });
+  // Render inicial
+  render(animes);
 
-    // Cambio de header al hacer scroll (igual que antes)
-    window.addEventListener('scroll', () => {
-      document.querySelector('header')
-        .classList.toggle('scrolled', window.scrollY > 50);
-    });
-  </script>
+
+  // —————————— Cambiar header al hacer scroll ——————————
+  window.addEventListener('scroll', () => {
+    document.querySelector('header')
+      .classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // —————————— Enlazar búsqueda al debounce ——————————
+  document.getElementById('search')
+          .addEventListener('input', debouncedFiltro);
+  document.getElementById('genre-select')
+          .addEventListener('change', filtro);
+  document.getElementById('rating-select')
+          .addEventListener('change', filtro);
+</script>
 </body>
 </html>

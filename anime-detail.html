@@ -110,6 +110,7 @@
   <audio id="kb-music" loop><source src="https://www.dropbox.com/scl/fi/a5ftpvggsb67kx584i0kx/KONOSUBA-Gods-blessing-on-this-wonderful-world-Opening-Fantastic-Dreamer.mp3?rlkey=vjzqpyqn5bqopedx21oiromjx&st=9c47affp&raw=1" type="audio/mpeg"></audio>
   <audio id="iz-ost" loop><source src="https://www.dropbox.com/scl/fi/ajz2nz6psxadglurd1om4/Izure-Saikyou-no-Renkinjutsushi-Opening-Full-TREASURE-by-DIALOGUE.mp3?rlkey=0fso7p0rl6rwcz5pj31fildzk&st=pxzfm5md&raw=1" type="audio/mpeg"></audio>
   <audio id="jj-ost" loop><source src="https://www.dropbox.com/scl/fi/o6tz1ztrrqt14fqdlhwjc/TV-2-OP-OP-King-Gnu-SPECIALZ-11-56-MBSTBS-28.mp3?rlkey=0720x38jv8mey8ux361mdt17e&st=8nwdxvhq&raw=1" type="audio/mpeg"></audio>
+  <audio id="akame-ost" loop><source src="https://www.dropbox.com/scl/fi/zk69qocarilx6zuwto65x/akame-ga-kill-Opening-1-Full.mp3?rlkey=t474skov33gnlo751s88ehgip&st=aq8dksxr&raw=1" type="audio/mpeg"></audio>
   <audio id="herox-ost" loop><source src="https://www.dropbox.com/scl/fi/qco7a2km0hx8b6pdor0sf/TO-BE-HERO-X-Ending-FULL-KONTINUUM-by-SennaRin-Lyrics.mp3?rlkey=ba7b47vkvcs7pfjh84fv33ann&st=r7dzkw7i&raw=1" type="audio/mpeg"></audio>
   <audio id="al-ost" loop><source src="https://www.dropbox.com/scl/fi/tuaxm8zttc83ymbn4bv2w/Alya-Sometimes-Hides-Her-Feelings-in-Russian-Opening-Ichiban-Kagayaku-Hoshi.mp3?rlkey=v2uqxurdgbojls9urj300h0z1&st=1mw6vpvg&raw=1" type="audio/mpeg"></audio>
   <audio id="ra-ost" loop><source src="https://www.dropbox.com/scl/fi/n3ie0ifa1ht2pf4tqvkxz/Reborn-as-a-vending-machine-now-I-wander-the-dungeon-Op-opening.mp3?rlkey=5xoje07rzz8nof4vm8h2swug2&st=3140qine&raw=1" type="audio/mpeg"></audio>
@@ -609,6 +610,43 @@
           }
         ]
       },
+      8: {
+        title: "Akame Ga Kill",
+        desc: "Bajo el gobierno de un imperio tirano, Tatsumi, un joven espadachín, parte de su pueblo natal para intentar salvarlo de una pobreza extrema. En su viaje conocerá a Akami, una chica que fue comprada por el imperio, criada y entrenada para convertirse en un aasesina de élite miembro del grupo \"Night Raid\". Juntos, Tatsumi y Night Raid se enfrentarán a la corrupción del imperio.",
+        cover: "Akame1.jpg",
+        seasons: [
+          {
+            num: 1,
+            cover: "akame11.jpg",
+            eps: [
+              { title: "Akame Ga Kill T1 Cap 1"},
+              { title: "Akame Ga Kill T1 Cap 2"},
+              { title: "Akame Ga Kill T1 Cap 3"},
+              { title: "Akame Ga Kill T1 Cap 4"},
+              { title: "Akame Ga Kill T1 Cap 5"},
+              { title: "Akame Ga Kill T1 Cap 6"},
+              { title: "Akame Ga Kill T1 Cap 7"},
+              { title: "Akame Ga Kill T1 Cap 8"},
+              { title: "Akame Ga Kill T1 Cap 9"},
+              { title: "Akame Ga Kill T1 Cap 10"},
+              { title: "Akame Ga Kill T1 Cap 11"},
+              { title: "Akame Ga Kill T1 Cap 12"},
+              { title: "Akame Ga Kill T1 Cap 13"},
+              { title: "Akame Ga Kill T1 Cap 14"},
+              { title: "Akame Ga Kill T1 Cap 15"},
+              { title: "Akame Ga Kill T1 Cap 16"},
+              { title: "Akame Ga Kill T1 Cap 17"},
+              { title: "Akame Ga Kill T1 Cap 18"},
+              { title: "Akame Ga Kill T1 Cap 19"},
+              { title: "Akame Ga Kill T1 Cap 20"},
+              { title: "Akame Ga Kill T1 Cap 21"},
+              { title: "Akame Ga Kill T1 Cap 22"},
+              { title: "Akame Ga Kill T1 Cap 23"},
+              { title: "Akame Ga Kill T1 Cap 24"},
+            ]
+          }
+        ]
+      },
       9: {
         title: "To Be Hero X",
         desc: "Este es un mundo en el que los mejores héroes son aclamados. El \"Valor de Confianza\" es lo que crean superhéroes. Si la gente cree que un héroe \"puede volar\", adquirirá la capacidad de volar. También ocurre al revés: aunque un héroe tenga poderes, si baja su Valor de Confianza, también perderá sus poderes. El Valor de Confianza se mide en forma de datos y se usa para clasificar a los héroes. Una vez cada dos años, los mejores héroes se reúnen para competir en un torneo especial. El Valor de Confianza de los participantes en el torneo varía en función de su rendimiento en el mismo, actualizándose posteriormente la clasificación, y al héroe que queda en lo más alto se lo conoce como \"X\"...",
@@ -1025,12 +1063,12 @@
 
 
     // 4) Pausar todos los audios
-    const audios = ['dd-ost','jj-ost','kb-music','rz-ost','mt-ost','ts-ost','st-ost','wi-ost','iz-ost','herox-ost','al-ost','ra-ost','ki-ost','gorila-ost','bb-ost','ov-ost','shi-ost','aliester-ost','oni-ost','sr-ost']
+    const audios = ['dd-ost','jj-ost','kb-music','rz-ost','mt-ost','ts-ost','st-ost','wi-ost','iz-ost','akame-ost','herox-ost','al-ost','ra-ost','ki-ost','gorila-ost','bb-ost','ov-ost','shi-ost','aliester-ost','oni-ost','sr-ost']
       .map(i => document.getElementById(i));
     audios.forEach(a=>{ a.pause(); a.currentTime=0; });
 
     // 5) Reproducir el OST al primer clic
-    const playMap = {1:'dd-ost',2:'jj-ost',3:'kb-music',4:'rz-ost',5:'mt-ost',6:'ts-ost',7:'st-ost',9:'herox-ost',12:'wi-ost',13:'iz-ost',14:'al-ost',15:'ra-ost',16:'ki-ost',17:'gorila-ost',19:'bb-ost',20:'ov-ost',21:'shi-ost',23:'aliester-ost',24:'oni-ost',30:'sr-ost'};
+    const playMap = {1:'dd-ost',2:'jj-ost',3:'kb-music',4:'rz-ost',5:'mt-ost',6:'ts-ost',7:'st-ost',8:'akame-ost',9:'herox-ost',12:'wi-ost',13:'iz-ost',14:'al-ost',15:'ra-ost',16:'ki-ost',17:'gorila-ost',19:'bb-ost',20:'ov-ost',21:'shi-ost',23:'aliester-ost',24:'oni-ost',30:'sr-ost'};
     if (playMap[id]) {
       document.addEventListener('click', ()=>{
         const a = document.getElementById(playMap[id]);

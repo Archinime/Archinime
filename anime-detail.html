@@ -112,6 +112,7 @@
   <audio id="jj-ost" loop><source src="https://www.dropbox.com/scl/fi/o6tz1ztrrqt14fqdlhwjc/TV-2-OP-OP-King-Gnu-SPECIALZ-11-56-MBSTBS-28.mp3?rlkey=0720x38jv8mey8ux361mdt17e&st=8nwdxvhq&raw=1" type="audio/mpeg"></audio>
   <audio id="akame-ost" loop><source src="https://www.dropbox.com/scl/fi/zk69qocarilx6zuwto65x/akame-ga-kill-Opening-1-Full.mp3?rlkey=t474skov33gnlo751s88ehgip&st=aq8dksxr&raw=1" type="audio/mpeg"></audio>
   <audio id="herox-ost" loop><source src="https://www.dropbox.com/scl/fi/qco7a2km0hx8b6pdor0sf/TO-BE-HERO-X-Ending-FULL-KONTINUUM-by-SennaRin-Lyrics.mp3?rlkey=ba7b47vkvcs7pfjh84fv33ann&st=r7dzkw7i&raw=1" type="audio/mpeg"></audio>
+  <audio id="maou2099-ost" loop><source src="https://www.dropbox.com/scl/fi/4lt2eo48s332etw2tv1sn/Maou-2099-Opening-Full-Shiyui-Hollow.mp3?rlkey=alnrpw2xm1qpqxlwgxmv1jb18&st=pc8iwkyl&raw=1" type="audio/mpeg"></audio>
   <audio id="al-ost" loop><source src="https://www.dropbox.com/scl/fi/tuaxm8zttc83ymbn4bv2w/Alya-Sometimes-Hides-Her-Feelings-in-Russian-Opening-Ichiban-Kagayaku-Hoshi.mp3?rlkey=v2uqxurdgbojls9urj300h0z1&st=1mw6vpvg&raw=1" type="audio/mpeg"></audio>
   <audio id="ra-ost" loop><source src="https://www.dropbox.com/scl/fi/n3ie0ifa1ht2pf4tqvkxz/Reborn-as-a-vending-machine-now-I-wander-the-dungeon-Op-opening.mp3?rlkey=5xoje07rzz8nof4vm8h2swug2&st=3140qine&raw=1" type="audio/mpeg"></audio>
   <audio id="ki-ost" loop><source src="https://www.dropbox.com/scl/fi/f6ndrktnbc4ytwkagoztm/Lyrics-AMV-Kimisen-OP-Full-Against.-Kaori-Ishihara.mp3?rlkey=rcpatwiczklgamqzd4lz0yciy&st=3d5g1hid&raw=1" type="audio/mpeg"></audio>
@@ -135,7 +136,6 @@
   <div id="toast" class="toast">✅ El enlace ha sido copiado</div>
 
   <script>
-  const seasonLabel = "Temporada";
   const data = {
     1: {
         title: "DAN DA DAN",
@@ -239,13 +239,32 @@
     },
 
       3: {
-        title: "Konosuba",
+        title: "¡KonoSuba! ¡Una bendición para este maravilloso mundo!",
         desc: "Kazuma Satou es un chico de preparatoria otaku y hikikomori que no suele salir de casa, pero cuando lo hace, un fatídico (y ridículo) accidente acaba con su vida. En el otro mundo aparece una diosa ante él y le propone comenzar de nuevo su vida en un mundo de magia y espada, pero las condiciones son un tanto peculiares, así que acabará comenzando de cero como aventurero y acompañado de una diosa.",
         cover: "kono.jpg",
         seasons: [
           {
-
             num: 1,
+	    name: "KonoSuba: Explosión en un mundo maravilloso",
+            cover: "konome.jpg",
+            eps: [
+              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 1"},
+              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 2"},
+              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 3"},
+              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 4"},
+              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 5"},
+              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 6"},
+              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 7"},
+              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 8"},
+              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 9"},
+              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 10"},
+              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 11"},
+              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 12"},
+            ]
+          },
+          {
+            num: 2,
+	    name: "Temporada 1",
             cover: "konosuba.jpg",
             eps: [
               { title: "¡KonoSuba! ¡Una bendición para este maravilloso mundo! T1 Cap 1"},
@@ -262,7 +281,8 @@
             ]
           },
           {
-            num: 2,
+            num: 3,
+	    name: "Temporada 2",
             cover: "KONO2.jpg",
             eps: [
               { title: "¡KonoSuba! ¡Una bendición para este maravilloso mundo! T2 Cap 1"},
@@ -281,25 +301,8 @@
             ]
           },
           {
-            label: "KonoSuba: Explosión en un mundo maravilloso",
-            cover: "konome.jpg",
-            eps: [
-              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 1"},
-              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 2"},
-              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 3"},
-              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 4"},
-              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 5"},
-              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 6"},
-              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 7"},
-              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 8"},
-              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 9"},
-              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 10"},
-              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 11"},
-              { title: "KonoSuba: Explosión en un mundo maravilloso Cap 12"},
-            ]
-          },
-          {
-            num: 3,
+            num: 4,
+	    name: "Temporada 3",
             cover: "kono3.png",
             eps: [
               { title: "¡KonoSuba! ¡Una bendición para este maravilloso mundo! T3 Cap 1"},
@@ -354,12 +357,27 @@
               {title:"Re:Zero T1 Cap 23"},
               {title:"Re:Zero T1 Cap 24"},
               {title:"Re:Zero T1 Cap 25"},
-              {title:"Re:Zero OVA 1 Memory Snow"},
-              {title:"Re:Zero OVA 2 Frozen Bonds"},
             ]
           },
           {
             num: 2,
+	    name: "OVA 1",
+            cover: "https://www.dropbox.com/scl/fi/qvlliskznnw5d0erdqgx2/memorysnow.jpg?rlkey=wpsr0aobcumds7drop5kmgvhq&st=r7jwwrec&raw=1",
+            eps: [
+              {title:"Re:Zero OVA 1 Memory Snow"},
+            ]
+          },
+          {
+            num: 3,
+	    name: "OVA 2",
+            cover: "https://www.dropbox.com/scl/fi/o7fjn1yzvssr0udzpyf87/frozenbond.jpg?rlkey=va7eox0xpy8gtgj930qmk00dc&st=tbuvgcyc&raw=1",
+            eps: [
+              {title:"Re:Zero OVA 2 Frozen Bonds"},
+            ]
+          },
+          {
+            num: 4,
+	    name: "Temporada 2",
             cover: "wermi.png",
             eps: [
               {title:"Re:Zero T2 Cap 1"},
@@ -390,7 +408,8 @@
             ]
           },
           {
-            num: 3,
+            num: 5,
+	    name: "Temporada 3",
             cover: "wermi3.png",
             eps: [
               {title:"Re:Zero T3 Cap 1"},
@@ -517,19 +536,76 @@
               {title:"Tensei Shitara Slime Datta Ken T1 Cap 23"},
               {title:"Tensei Shitara Slime Datta Ken T1 Cap 24"},
               {title:"Tensei Shitara Slime Datta Ken T1 Cap 25"},
-              {title:"Tensei Shitara Slime Datta Ken OVA 1"},
-              {title:"Tensei Shitara Slime Datta Ken OVA 2"},
-              {title:"Tensei Shitara Slime Datta Ken OVA 3"},
-              {title:"Tensei Shitara Slime Datta Ken OVA 4"},
-              {title:"Tensei Shitara Slime Datta Ken OVA 5"},
-              {title:"Tensei Shitara Slime Datta Ken Coleus no Yume ESPECIAL 1"},
-              {title:"Tensei Shitara Slime Datta Ken Coleus no Yume ESPECIAL 2"},
-              {title:"Tensei Shitara Slime Datta Ken Coleus no Yume ESPECIAL 3"},
             ]
           },
           {
             num: 2,
-            cover: "tensura22.jpg",
+	    name: "OVA 1",
+            cover: "https://www.dropbox.com/scl/fi/k0ls4nfraabvcgnzabowj/slimeova1.jpg?rlkey=3fcrw6dxyx8rpqb4nlsfe01rq&st=fpul3ecd&raw=1",
+            eps: [
+              {title:"Tensei Shitara Slime Datta Ken OVA 1"},
+            ]
+          },
+          {
+            num: 3,
+	    name: "OVA 2",
+            cover: "https://www.dropbox.com/scl/fi/7hkrogwhi7mmmf5ss3fhs/20241130-2.jpg?rlkey=ppye69mmc1cmp30usipi9idmv&st=bgk4g5gg&raw=1",
+            eps: [
+              {title:"Tensei Shitara Slime Datta Ken OVA 2"},
+            ]
+          },
+          {
+            num: 4,
+	    name: "OVA 3",
+            cover: "https://www.dropbox.com/scl/fi/tqc17z3qar9pxfcgi9zya/1477001f0720aef9992b9cba9e12615f.jpg?rlkey=bi3zxk6w0k84jn5s0s1x73axk&st=q9fwy5fn&raw=1",
+            eps: [
+              {title:"Tensei Shitara Slime Datta Ken OVA 3"},
+            ]
+          },
+          {
+            num: 5,
+	    name: "OVA 4",
+            cover: "https://www.dropbox.com/scl/fi/tqc17z3qar9pxfcgi9zya/1477001f0720aef9992b9cba9e12615f.jpg?rlkey=bi3zxk6w0k84jn5s0s1x73axk&st=q9fwy5fn&raw=1",
+            eps: [
+              {title:"Tensei Shitara Slime Datta Ken OVA 4"},
+            ]
+          },
+          {
+            num: 6,
+	    name: "OVA 5",
+            cover: "https://www.dropbox.com/scl/fi/tqc17z3qar9pxfcgi9zya/1477001f0720aef9992b9cba9e12615f.jpg?rlkey=bi3zxk6w0k84jn5s0s1x73axk&st=q9fwy5fn&raw=1",
+            eps: [
+              {title:"Tensei Shitara Slime Datta Ken OVA 5"},
+            ]
+          },
+          {
+            num: 7,
+	    name: "ESPECIAL 1",
+            cover: "https://www.dropbox.com/scl/fi/kcs3irob5bxh8gakdytk7/MV5BMTU3MTIzN2UtMDhmOS00MjM1LWI5OWEtOWQ3MTZjOWFjMDM2XkEyXkFqcGc-._V1_FMjpg_UX1000_.jpg?rlkey=ddrnjyrra1mm5gp3qghiqz3w0&st=gah9qpka&raw=1",
+            eps: [
+              {title:"Tensei Shitara Slime Datta Ken Coleus no Yume ESPECIAL 1"},
+            ]
+          },
+          {
+            num: 8,
+	    name: "ESPECIAL 2",
+            cover: "https://www.dropbox.com/scl/fi/kcs3irob5bxh8gakdytk7/MV5BMTU3MTIzN2UtMDhmOS00MjM1LWI5OWEtOWQ3MTZjOWFjMDM2XkEyXkFqcGc-._V1_FMjpg_UX1000_.jpg?rlkey=ddrnjyrra1mm5gp3qghiqz3w0&st=gah9qpka&raw=1",
+            eps: [
+              {title:"Tensei Shitara Slime Datta Ken Coleus no Yume ESPECIAL 2"},
+            ]
+          },
+          {
+            num: 9,
+	    name: "ESPECIAL 3",
+            cover: "https://www.dropbox.com/scl/fi/kcs3irob5bxh8gakdytk7/MV5BMTU3MTIzN2UtMDhmOS00MjM1LWI5OWEtOWQ3MTZjOWFjMDM2XkEyXkFqcGc-._V1_FMjpg_UX1000_.jpg?rlkey=ddrnjyrra1mm5gp3qghiqz3w0&st=gah9qpka&raw=1",
+            eps: [
+              {title:"Tensei Shitara Slime Datta Ken Coleus no Yume ESPECIAL 3"},
+            ]
+          },
+          {
+            num: 10,
+	    name: "Tensura Nikki Tensei shitara Slime Datta Ken",
+            cover: "https://www.dropbox.com/scl/fi/q8bum80iahn7gxh400ku9/ETsT4reUUAAeAPr-1.jpg?rlkey=x7fjm8om8jrxkl2nq7na0o70z&st=n4ev0cur&raw=1",
             eps: [
 
               {title:"Tensura Nikki Tensei shitara Slime Datta Ken Cap 1"},
@@ -544,6 +620,13 @@
               {title:"Tensura Nikki Tensei shitara Slime Datta Ken Cap 10"},
               {title:"Tensura Nikki Tensei shitara Slime Datta Ken Cap 11"},
               {title:"Tensura Nikki Tensei shitara Slime Datta Ken Cap 12"},
+            ]
+          },
+          {
+            num: 11,
+	    name: "Temporada 2",
+            cover: "tensura22.jpg",
+            eps: [
               {title:"Tensei Shitara Slime Datta Ken T2 Cap 1"},
               {title:"Tensei Shitara Slime Datta Ken T2 Cap 2"},
               {title:"Tensei Shitara Slime Datta Ken T2 Cap 3"},
@@ -568,11 +651,19 @@
               {title:"Tensei Shitara Slime Datta Ken T2 Cap 22"},
               {title:"Tensei Shitara Slime Datta Ken T2 Cap 23"},
               {title:"Tensei Shitara Slime Datta Ken T2 Cap 24"},
+            ]
+          },
+          {
+            num: 12,
+	    name: "Pelicula 1",
+            cover: "https://www.dropbox.com/scl/fi/87tecbrxiwl4qv996wj2i/smilepelicula.jpg?rlkey=pabnkmf8j1i0hl5jeohvj0ihu&st=y0xxy6a4&raw=1",
+            eps: [
               {title:"Tensei Shitara Slime Datta Ken  PELICULA 1 EL VINCULO ESCARLATA"},
             ]
           },
           {
-            num: 3,
+            num: 13,
+	    name: "Temporada 3",
             cover: "tensura3.jpg",
             eps: [
               {title:"Tensei Shitara Slime Datta Ken T3 Cap 0"},
@@ -625,7 +716,21 @@
               { title: "Saga of Tanya the Evil (Yōjo Senki) T1 Cap 10"},
               { title: "Saga of Tanya the Evil (Yōjo Senki) T1 Cap 11"},
               { title: "Saga of Tanya the Evil (Yōjo Senki) T1 Cap 12"},
+            ]
+          },
+          {
+            num: 2,
+	    name: "Pelicula 1",
+            cover: "https://www.dropbox.com/scl/fi/g2k407zpzrv7c9q52b4xk/Tanya-Movie-Poster.jpg?rlkey=ro290in1sh1mqsm4mg0nbqkku&st=h9ez020u&raw=1",
+            eps: [
               { title: "Saga of Tanya the Evil (Yōjo Senki) Pelicula"},
+            ]
+          },
+          {
+            num: 3,
+	    name: "OVA 1",
+            cover: "https://www.dropbox.com/scl/fi/y98z505h2j7j1abfrwf7b/tgkp0Jr.png?rlkey=zlv29fab2hudrncjemdvs3gvt&st=igpa8lrx&raw=1",
+            eps: [
               { title: "Saga of Tanya the Evil (Yōjo Senki) OVA SUB"},
             ]
           }
@@ -692,6 +797,32 @@
               { title: "To Be Hero X T1 Cap 13"},
               { title: "To Be Hero X T1 Cap 14"},
               { title: "To Be Hero X T1 Cap 15"},
+              { title: "To Be Hero X T1 Cap 16"},
+            ]
+          }
+        ]
+      },
+      11: {
+        title: "Maou 2099",
+        desc: "Hace cinco siglos, el Señor Demonio Veltol reinaba sobre una nación inmortal. Ahora, ha llegado su momento de despertar. Corre el año 2099 y la civilización ha alcanzado su máximo desarrollo, dando lugar a un paisaje de alta tecnología con imponentes rascacielos, algo nunca antes conquistado. Veltol puede ser una reliquia del pasado, pero no se equivoquen: ¡este nuevo mundo estará a su disposición!",
+        cover: "https://www.dropbox.com/scl/fi/su8i4y0cynftlnzlldfhj/maou2099-1.jpg?rlkey=4yg0msepo25lpn80kxg9ni3um&st=vdhrcc8y&raw=1",
+        seasons: [
+          {
+            num: 1,
+            cover: "https://www.dropbox.com/scl/fi/axa2pt1w17qjje7rlj4vj/demonlord2099.jpg?rlkey=ttell6vd3tkr0yq8hicb6zyhh&st=desgd2d6&raw=1",
+            eps: [
+              { title: "Maou 2099 T1 Cap 1"},
+              { title: "Maou 2099 T1 Cap 2"},
+              { title: "Maou 2099 T1 Cap 3"},
+              { title: "Maou 2099 T1 Cap 4"},
+              { title: "Maou 2099 T1 Cap 5"},
+              { title: "Maou 2099 T1 Cap 6"},
+              { title: "Maou 2099 T1 Cap 7"},
+              { title: "Maou 2099 T1 Cap 8"},
+              { title: "Maou 2099 T1 Cap 9"},
+              { title: "Maou 2099 T1 Cap 10"},
+              { title: "Maou 2099 T1 Cap 11"},
+              { title: "Maou 2099 T1 Cap 12"},
             ]
           }
         ]
@@ -1011,7 +1142,14 @@
               { title: "Definitivamente. ¡No me gusta mi hermano para nada! T1 Cap 10"},
               { title: "Definitivamente. ¡No me gusta mi hermano para nada! T1 Cap 11"},
               { title: "Definitivamente. ¡No me gusta mi hermano para nada! T1 Cap 12"},
-              { title: "Definitivamente. ¡No me gusta mi hermano para nada! T1 Cap 13"},
+            ]
+          },
+          {
+            num: 2,
+	    name: "OVA 1",
+            cover: "https://www.dropbox.com/scl/fi/1ds4mocfv035zgs7brobv/Definitivamente1.jpg?rlkey=xurw5jdgzeeww66ly0vmhiy6k&st=o8jyfz4c&raw=1",
+            eps: [
+              { title: "Definitivamente. ¡No me gusta mi hermano para nada! OVA 1"},
             ]
           }
         ]
@@ -1061,7 +1199,8 @@
         <p class="desc">${a.desc}</p>
       `;
       a.seasons.forEach(s => {
-        const titleLabel = s.label ? s.label : `${seasonLabel} ${s.num}`;
+        // Aquí usamos s.name en lugar de label o variable global
+        const titleLabel = s.name ? s.name : `Temporada ${s.num}`;
         html += `
           <details>
             <summary>${titleLabel}</summary>
@@ -1069,9 +1208,11 @@
               <img src="${s.cover}" alt="${titleLabel}">
               <ul class="video-list">
                 ${s.eps.map((ep,i) => `
-                  <li><a href="video-player.html?anime=${id}&s=${s.num||''}&e=${i+1}">
-                    ${ep.title}
-                  </a></li>
+                  <li>
+                    <a href="video-player.html?anime=${id}&s=${s.num}&e=${i+1}">
+                      ${ep.title}
+                    </a>
+                  </li>
                 `).join('')}
               </ul>
             </div>
@@ -1081,39 +1222,57 @@
       c.innerHTML = html;
     })();
 
+    // 4) Botón Compartir con animación resistente
+    (function setupShare(){
+      const shareBtn = document.createElement('button');
+      shareBtn.textContent = "🔗 Compartir";
+      shareBtn.style.position = "fixed";
+      shareBtn.style.top = "1rem";
+      shareBtn.style.right = "1rem";
+      shareBtn.style.padding = "0.5rem 1rem";
+      shareBtn.style.background = "rgba(255,255,255,0.1)";
+      shareBtn.style.border = "none";
+      shareBtn.style.borderRadius = "0.5rem";
+      shareBtn.style.color = "#fff";
+      shareBtn.style.cursor = "pointer";
+      document.body.appendChild(shareBtn);
 
-    // 4) Pausar todos los audios
-    const audios = ['dd-ost','jj-ost','kb-music','rz-ost','mt-ost','ts-ost','st-ost','wi-ost','iz-ost','akame-ost','herox-ost','al-ost','ra-ost','ki-ost','gorila-ost','bb-ost','ov-ost','shi-ost','aliester-ost','oni-ost','sr-ost']
-      .map(i => document.getElementById(i));
-    audios.forEach(a=>{ a.pause(); a.currentTime=0; });
+      const toast = document.getElementById('toast');
+      let inTO, outTO;
 
-    // 5) Reproducir el OST al primer clic
-    const playMap = {1:'dd-ost',2:'jj-ost',3:'kb-music',4:'rz-ost',5:'mt-ost',6:'ts-ost',7:'st-ost',8:'akame-ost',9:'herox-ost',12:'wi-ost',13:'iz-ost',14:'al-ost',15:'ra-ost',16:'ki-ost',17:'gorila-ost',19:'bb-ost',20:'ov-ost',21:'shi-ost',23:'aliester-ost',24:'oni-ost',30:'sr-ost'};
-    if (playMap[id]) {
-      document.addEventListener('click', ()=>{
-        const a = document.getElementById(playMap[id]);
-        a.volume = 0.5;
-        a.play().catch(()=>{});
-      }, { once:true });
-    }
-
-    // 4) Botón Compartir con animación resistente a múltiples clics
-    const shareBtn = document.getElementById('share-detail');
-    const toast    = document.getElementById('toast');
-    let inTO, outTO;
-    shareBtn.addEventListener('click', () => {
-      const url = `${location.origin}${location.pathname}?id=${id}`;
-      navigator.clipboard.writeText(url).then(() => {
-        clearTimeout(inTO);
-        clearTimeout(outTO);
-        toast.style.display   = 'flex';
-        toast.style.animation = 'toast-in 0.4s ease-out forwards';
-        inTO = setTimeout(() => {
-          toast.style.animation = 'toast-out 0.7s ease-in forwards';
-          outTO = setTimeout(()=>{ toast.style.display='none'; }, 700);
-        }, 3000);
+      shareBtn.addEventListener('click', () => {
+        const url = `${location.origin}${location.pathname}?id=${id}`;
+        navigator.clipboard.writeText(url).then(() => {
+          clearTimeout(inTO);
+          clearTimeout(outTO);
+          toast.style.display   = 'flex';
+          toast.style.animation = 'toast-in 0.4s ease-out forwards';
+          inTO = setTimeout(() => {
+            toast.style.animation = 'toast-out 0.7s ease-in forwards';
+            outTO = setTimeout(()=>{ toast.style.display='none'; }, 700);
+          }, 3000);
+        });
       });
-    });
+    })();
+
+    // 5) Pausar todos los audios y reproducir OST al primer clic
+    (function setupAudio(){
+      const audios = ['dd-ost','jj-ost','kb-music','rz-ost','mt-ost','ts-ost','st-ost','wi-ost','iz-ost','akame-ost','herox-ost','maou2099-ost','al-ost','ra-ost','ki-ost','gorila-ost','bb-ost','ov-ost','shi-ost','aliester-ost','oni-ost','sr-ost']
+        .map(id => document.getElementById(id))
+        .filter(el => el);
+      audios.forEach(a => { a.pause(); a.currentTime = 0; });
+
+      const playMap = {1:'dd-ost',2:'jj-ost',3:'kb-music',4:'rz-ost',5:'mt-ost',6:'ts-ost',7:'st-ost',8:'akame-ost',9:'herox-ost',11:'maou2099-ost',12:'wi-ost',13:'iz-ost',14:'al-ost',15:'ra-ost',16:'ki-ost',17:'gorila-ost',19:'bb-ost',20:'ov-ost',21:'shi-ost',23:'aliester-ost',24:'oni-ost',30:'sr-ost'};
+      if (playMap[id]) {
+        document.addEventListener('click', ()=>{
+          const a = document.getElementById(playMap[id]);
+          if (a) {
+            a.volume = 0.5;
+            a.play().catch(()=>{});
+          }
+        }, { once:true });
+      }
+    })();
   </script>
 </body>
 </html>

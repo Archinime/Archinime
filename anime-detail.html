@@ -128,6 +128,7 @@
   <audio id="aliester-ost" loop><source src="https://www.dropbox.com/scl/fi/4oqr6y0doqq7brt5zh3r8/Unaware-Atelier-Meister-Opening-full-FACTSORY-by-MeseMoa-Lyrics.mp3?rlkey=37lhi9jt4ddplqj31bye4fxin&st=82lv1mh7&raw=1" type="audio/mpeg"></audio>
   <audio id="oni-ost" loop><source src="https://www.dropbox.com/scl/fi/wjnlhf1nltz46ajg94iwa/Onii-chan-no-Koto-Nanka-Zenzen-Suki-Janain-Dakara-Ne-ED-FULL.mp3?rlkey=gn89oyv0s2w2sz8ve5flub7bj&st=618kyvo6&raw=1" type="audio/mpeg"></audio>
   <audio id="kaiju8-ost" loop><source src="https://www.dropbox.com/scl/fi/kevx3nmq6o0dxx5eq5o92/ED-OneRepublic-Nobody-23.mp3?rlkey=j7s3hlxcv8iobkblrwytrthao&st=l2va3yb9&raw=1" type="audio/mpeg"></audio>
+  <audio id="zootopia-ost" loop><source src="https://www.dropbox.com/scl/fi/zjal6ttu1l7ez7n7p2bof/Zootopia-Try-Everything-By-Shakira-Music-Video.mp3?rlkey=28azkjp04guy7jetuzyq02azv&st=ukr6ey7f&raw=1" type="audio/mpeg"></audio>
   <audio id="drstone-ost" loop><source src="https://www.dropbox.com/scl/fi/s1ptrhwxkpuexhnb30cf8/Dr.-Stone-Good-Morning-World-Burnout-Syndromes-AMV-sub-espa-ol.mp3?rlkey=rk75fn8wl2u5m6fa0r5616dih&st=ocriop50&&raw=1" type="audio/mpeg"></audio>
   <audio id="sr-ost" loop><source src="https://www.dropbox.com/scl/fi/1o7env4rkr3ol8gfdnumr/Shoujo-Ramune-Anime-Opening-OVA-OP.mp3?rlkey=xqiqtoj22rmc8znm9k8p5pfdw&st=wjprsjpj&raw=1" type="audio/mpeg"></audio>
 
@@ -1314,6 +1315,29 @@
           }
         ]
       },
+      26: {
+        title: "Zootopia",
+        desc: "La metrópoli Zootopía es una ciudad de mamíferos, donde muchos animales viven y se desarrollan. Allí, la optimista agente Judy Hopps se convierte en la primera conejita de un cuerpo policial compuesto por animales duros y enormes. Judy está decidida a demostrar su valentía y se mete en un caso con Nick Wilde, un zorro parlanchín y estafador.",
+        cover: "https://www.dropbox.com/scl/fi/fqx51rdmzpzey4l5dswwv/zootopia.jpg?rlkey=52hnhfwz3pxr74564l5nzd6il&st=ndqtsgnw&raw=1",
+        seasons: [
+          {
+            num: 1,
+	    name: "Zootopia 1",
+            cover: "https://www.dropbox.com/scl/fi/h4u28g5gc8h06lqpapm7n/zootopia1.jpg?rlkey=d5g0vyhomx7ki87j4kkb9gfvt&st=iy9nscle&raw=1",
+            eps: [
+              { title: "Zootopia 1"},
+            ]
+          },
+          {
+            num: 2,
+	    name: "Zootopia 2",
+            cover: "https://www.dropbox.com/scl/fi/8jsapi6ovjb24j9hwydhq/zootopia2.jpeg?rlkey=dee636x8blmjjuh6xltn7x2i5&st=x9bcl3m3&raw=1",
+            eps: [
+              { title: "Zootopia 2 (Próximamente"},
+            ]
+          }
+        ]
+      },
       28: {
         title: "Dr. Stone",
         desc: "Senku es un joven extremadamente inteligente con un gran don para la ciencia y una ácida personalidad, y su mejor amigo es Taiju, que es muy buena persona pero más apto para usar los músculos que para pensar. Cuando tras cierto incidente toda la humanidad acaba convertida en piedra, ellos logran despertarse en un mundo miles de años después, con la civilización humana completamente desaparecida y con toda la humanidad congelada en piedra como ellos estuvieron. Ahora es su obligación rescatar a la gente y crear un nuevo mundo.",
@@ -1520,12 +1544,12 @@
 
     // 5) Pausar todos los audios y reproducir OST al primer clic
     (function setupAudio(){
-      const audios = ['dd-ost','jj-ost','kb-music','rz-ost','mt-ost','ts-ost','st-ost','wi-ost','iz-ost','akame-ost','herox-ost','maou2099-ost','al-ost','ra-ost','ki-ost','gorila-ost','bb-ost','ov-ost','shi-ost','goblinslayer-ost','aliester-ost','oni-ost','kaiju8-ost','drstone-ost','sr-ost']
+      const audios = ['dd-ost','jj-ost','kb-music','rz-ost','mt-ost','ts-ost','st-ost','wi-ost','iz-ost','akame-ost','herox-ost','maou2099-ost','al-ost','ra-ost','ki-ost','gorila-ost','bb-ost','ov-ost','shi-ost','goblinslayer-ost','aliester-ost','oni-ost','kaiju8-ost','zootopia-ost','drstone-ost','sr-ost']
         .map(id => document.getElementById(id))
         .filter(el => el);
       audios.forEach(a => { a.pause(); a.currentTime = 0; });
 
-      const playMap = {1:'dd-ost',2:'jj-ost',3:'kb-music',4:'rz-ost',5:'mt-ost',6:'ts-ost',7:'st-ost',8:'akame-ost',9:'herox-ost',11:'maou2099-ost',12:'wi-ost',13:'iz-ost',14:'al-ost',15:'ra-ost',16:'ki-ost',17:'gorila-ost',19:'bb-ost',20:'ov-ost',21:'shi-ost',22:'goblinslayer-ost',23:'aliester-ost',24:'oni-ost',25:'kaiju8-ost',28:'drstone-ost',30:'sr-ost'};
+      const playMap = {1:'dd-ost',2:'jj-ost',3:'kb-music',4:'rz-ost',5:'mt-ost',6:'ts-ost',7:'st-ost',8:'akame-ost',9:'herox-ost',11:'maou2099-ost',12:'wi-ost',13:'iz-ost',14:'al-ost',15:'ra-ost',16:'ki-ost',17:'gorila-ost',19:'bb-ost',20:'ov-ost',21:'shi-ost',22:'goblinslayer-ost',23:'aliester-ost',24:'oni-ost',25:'kaiju8-ost',26:'zootopia-ost',28:'drstone-ost',30:'sr-ost'};
       if (playMap[id]) {
         document.addEventListener('click', ()=>{
           const a = document.getElementById(playMap[id]);
